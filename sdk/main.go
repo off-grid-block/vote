@@ -20,7 +20,7 @@ func main() {
 		// Chaincode parameters
 		ChainCodeID:     "vote",
 		ChaincodeGoPath: os.Getenv("GOPATH"),
-		ChaincodePath:   "github.com/off-grid-block/off-grid-cc/vote",
+		ChaincodePath:   "github.com/off-grid-block/vote/cc",
 		OrgAdmin:        "Admin",
 		OrgName:         "org1",
 		ConfigFile:      "config.yaml",

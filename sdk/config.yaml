@@ -13,7 +13,7 @@
 #
 # Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
 #
-version: 1.0.0
+version: 0.0.1
 
 #
 # The client section used by GO SDK.
@@ -307,8 +307,8 @@ organizations:
 orderers:
   orderer.example.com:
     # [Optional] Default: Infer from hostname
-    url: orderer.example.com:7050
-    #url: localhost:7050
+    # url: orderer.example.com:7050
+    url: localhost:7050
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
@@ -496,8 +496,8 @@ entityMatchers:
 #
   orderer:
     - pattern: (\w+).example.(\w+)
-      urlSubstitutionExp: orderer.example.com:7050
-      #urlSubstitutionExp: localhost:7050
+      # urlSubstitutionExp: orderer.example.com:7050
+      urlSubstitutionExp: localhost:7050
       sslTargetOverrideUrlSubstitutionExp: orderer.example.com
       mappedHost: orderer.example.com
 #
