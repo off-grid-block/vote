@@ -15,7 +15,7 @@ func main() {
 
 		// Channel parameters
 		ChannelID:     "mychannel",
-		ChannelConfig: "/Users/brianli/playground/fabric/fabric-samples/first-network/channel-artifacts/channel.tx",
+		ChannelConfig: "/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
 
 		// Chaincode parameters
 		ChainCodeID:     "vote",
