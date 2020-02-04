@@ -13,7 +13,7 @@
 #
 # Schema version of the content. Used by the SDK to apply the corresponding parsing rules.
 #
-version: 0.0.1
+version: 1.0.0
 
 #
 # The client section used by GO SDK.
@@ -66,7 +66,6 @@ client:
   # Root of the MSP directories with keys and certs.
   cryptoconfig:
     path: /Users/brianli/deon/fabric-samples/first-network/crypto-config
-    # path: /Users/brianli/playground/fabric/fabric-samples/first-network/crypto-config/
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
@@ -116,7 +115,6 @@ channels:
   # If channel doesn't define policies then policies from default channel will be used.
   # Also, if channel defines policies and some policy info is missing than that missing info will be filled from default channel.
   _default:
-
 
     # [Optional]. The application can use these options to perform channel operations like retrieving channel
     # config etc.
@@ -286,6 +284,7 @@ organizations:
 
     peers:
       - peer0.org2.example.com
+      - peer1.org2.example.com
 
     # certificateAuthorities:
     #   - ca.org2.example.com
@@ -307,7 +306,6 @@ organizations:
 orderers:
   orderer.example.com:
     # [Optional] Default: Infer from hostname
-    # url: orderer.example.com:7050
     url: localhost:7050
 
     # these are standard properties defined by the gRPC library
@@ -329,16 +327,15 @@ orderers:
       path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
       #path: first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
-#
+
 # List of peers to send various requests to, including endorsement, query
 # and event listener registration.
-#
+
 peers:
   peer0.org1.example.com:
     # this URL is used to send endorsement and query requests
     # [Optional] Default: Infer from hostname
-    url: peer0.org1.example.com:7051
-    #url: localhost:7051
+    url: localhost:7051
 
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
@@ -359,8 +356,7 @@ peers:
 
   peer1.org1.example.com:
     # this URL is used to send endorsement and query requests
-    url: peer1.org1.example.com:8051
-    #url: localhost:8051
+    url: localhost:8051
 
     grpcOptions:
       ssl-target-name-override: peer1.org1.example.com
@@ -380,8 +376,8 @@ peers:
       #path: first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer0.org2.example.com:
-    url: peer0.org2.example.com:8052
-    #url: localhost:9051
+    # this URL is used to send endorsement and query requests
+    url: localhost:9051
     grpcOptions:
       ssl-target-name-override: peer0.org2.example.com
       # These parameters should be set in coordination with the keepalive policy on the server,
@@ -396,7 +392,24 @@ peers:
 
     tlsCACerts:
       path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
-      #path: first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+
+  peer1.org2.example.com:
+    # this URL is used to send endorsement and query requests
+    url: localhost:10051
+    grpcOptions:
+      ssl-target-name-override: peer1.org2.example.com
+      # These parameters should be set in coordination with the keepalive policy on the server,
+      # as incompatible settings can result in closing of connection.
+      # When duration of the 'keep-alive-time' is set to 0 or less the keep alive client parameters are disabled
+      keep-alive-time: 0s
+      keep-alive-timeout: 20s
+      keep-alive-permit: false
+      fail-fast: false
+      # allow-insecure will be taken into consideration if address has no protocol defined, if true then grpc or else grpcs
+      allow-insecure: false
+
+    tlsCACerts:
+      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
 #
 # Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
@@ -462,59 +475,22 @@ peers:
 # In any case mappedHost's config will be used, so mapped host cannot be empty, if entityMatchers are used
 #entityMatchers:
 entityMatchers:
-#  peer:
-#    - pattern: (\w+).org1.example.com:(\d+)
-#      urlSubstitutionExp: ${1}.org1.example.com:${2}
-#      sslTargetOverrideUrlSubstitutionExp: ${1}.org1.example.com
-#      mappedHost: peer0.org1.example.com
-#
-#    - pattern: (\w+).org2.example.com:(\d+)
-#      urlSubstitutionExp: ${1}.org2.example.com:${2}
-#      sslTargetOverrideUrlSubstitutionExp: ${1}.org2.example.com
-#      mappedHost: peer0.org2.example.com
-#
-#    - pattern: (\w+).org1.example.(\w+)
-#      urlSubstitutionExp: localhost:7051
-#      sslTargetOverrideUrlSubstitutionExp: peer0.org1.example.com
-#      mappedHost: peer0.org1.example.com
-#
-#    - pattern: (\w+).org2.example.(\w+)
-#      #urlSubstitutionExp: peer0.org2.example.com:8051
-#      urlSubstitutionExp: localhost:9051
-#      sslTargetOverrideUrlSubstitutionExp: peer0.org2.example.com
-#      mappedHost: peer0.org2.example.com
+  peer:
+    - pattern: (\w+).org1.example.com:(\d+)
+      urlSubstitutionExp: localhost:${2}
+      sslTargetOverrideUrlSubstitutionExp: ${1}.org1.example.com
+      mappedHost: ${1}.org1.example.com
 
-#    - pattern: (\w+).example1.(\w+):(\d+)
-#      urlSubstitutionExp: ${1}.org1.example.${2}:${3}
-#      sslTargetOverrideUrlSubstitutionExp: ${1}.org1.example.${2}
-#      mappedHost: peer0.org1.example.com
-#
-#    - pattern: (\w+).org1.example.(\w+):(\d+)
-#      urlSubstitutionExp: peer0.org1.example.com:7051
-#      sslTargetOverrideUrlSubstitutionExp: peer0.org1.example.com
-#      mappedHost: peer0.org1.example.com
-#
+    - pattern: (\w+).org2.example.com:(\d+)
+      urlSubstitutionExp: localhost:${2}
+      sslTargetOverrideUrlSubstitutionExp: ${1}.org2.example.com
+      mappedHost: ${1}.org2.example.com
+
   orderer:
     - pattern: (\w+).example.(\w+)
-      # urlSubstitutionExp: orderer.example.com:7050
       urlSubstitutionExp: localhost:7050
       sslTargetOverrideUrlSubstitutionExp: orderer.example.com
       mappedHost: orderer.example.com
-#
-#    - pattern: (\w+).example2.(\w+)
-#      urlSubstitutionExp: localhost:7050
-#      sslTargetOverrideUrlSubstitutionExp: localhost
-#      mappedHost: orderer.example.com
-#
-#    - pattern: (\w+).example3.(\w+)
-#      urlSubstitutionExp:
-#      sslTargetOverrideUrlSubstitutionExp:
-#      mappedHost: orderer.example.com
-#
-#    - pattern: (\w+).example4.(\w+):(\d+)
-#      urlSubstitutionExp: ${1}.example.${2}:${3}
-#      sslTargetOverrideUrlSubstitutionExp: ${1}.example.${2}
-#      mappedHost: orderer.example.com
 #
 #  certificateAuthority:
 #    - pattern: (\w+).org1.example.(\w+)
