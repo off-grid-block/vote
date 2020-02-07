@@ -52,6 +52,8 @@ github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5
 github.com/miekg/pkcs11 v0.0.0-20190329070431-55f3fac3af27/go.mod h1:WCBAbTOdfhHhz7YXujeZMF7owC4tPb1naKFsgfUISjo=
 github.com/mitchellh/mapstructure v0.0.0-20180220230111-00c29f56e238 h1:+MZW2uvHgN8kYvksEN3f7eFL2wpzk0GxmlFsMybWc7E=
 github.com/mitchellh/mapstructure v0.0.0-20180220230111-00c29f56e238/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
+github.com/off-grid-block/off-grid-sdk v0.0.0-20191024214633-a41d78581dff h1:Ml6yQ8Q63+K2nto8cSxfDI2shyBEdkesxrJ+n6Fxk7Y=
+github.com/off-grid-block/off-grid-sdk v0.0.0-20191024214633-a41d78581dff/go.mod h1:49Y+H1IAyVomXeT4MW34Ekp0Amz3gIcWboKTVhH4OR4=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.4.2/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
 github.com/pelletier/go-toml v1.1.0 h1:cmiOvKzEunMsAxyhXSzpL5Q1CRKpVv0KQsnAIcSEVYM=
