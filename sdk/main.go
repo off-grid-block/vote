@@ -8,17 +8,17 @@ import (
 	"strings"
 )
 
-//function to read string
-func userInput(request string) (inputval string) {
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Println(request)
-	inputval, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Printf("Error %v\n", err)
-	}
-	returnval := strings.TrimRight (inputval, "\n")
-	return returnval
-}
+// //function to read string
+// func userInput(request string) (inputval string) {
+// 	reader := bufio.NewReader(os.Stdin)
+// 	fmt.Println(request)
+// 	inputval, err := reader.ReadString('\n')
+// 	if err != nil {
+// 		fmt.Printf("Error %v\n", err)
+// 	}
+// 	returnval := strings.TrimRight (inputval, "\n")
+// 	return returnval
+// }
 
 func main() {
 
@@ -67,19 +67,5 @@ func main() {
 		fmt.Printf("Failed to install and instantiate chaincode: %v\n", err)
 		return
 	}
-
-	err = fSetup.ClientSetup()
-	if err != nil {
-		fmt.Printf("Failed to set up client: %v\n", err)
-		return
-	}
-
-	payload, err := blockchain.InitEntrySDK("1", "1", "male", 30, "12345", "54321")
-	if err != nil {
-		fmt.Printf("Failed to initialize entry: %v\n", err)
-		return
-	}
-
-	// text := "{\"PollID\":\"1\",\"VoterID\":\"1\",\"VoterSex\":\"male\",\"VoterAge\":30,\"Salt\":\"12345\",\"VoteHash\":\"54321\"}"
 
 }

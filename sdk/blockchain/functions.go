@@ -20,7 +20,7 @@ import(
 // }
 
 // add entry using SDK
-func (s *SetupSDK) InitEntrySDK(PollID string, VoterID string, VoterSex string, VoterAge int, Salt string, VoteHash string) (string, error) {
+func (s *SetupSDK) InitVoteSDK(PollID string, VoterID string, VoterSex string, VoterAge string, Salt string, VoteHash string) (string, error) {
 
     text := fmt.Sprintf(
         "{\"PollID\":\"%s\",\"VoterID\":\"%s\",\"VoterSex\":\"%s\",\"VoterAge\":%s,\"Salt\":\"%s\",\"VoteHash\":\"%s\"}",
@@ -65,12 +65,15 @@ func (s *SetupSDK) InitEntrySDK(PollID string, VoterID string, VoterSex string, 
 }
 
 //read entry on chaincode using SDK
-func (s *SetupSDK) ReadEntrySDK(ID string) (string, error) {
+func (s *SetupSDK) GetVoteSDK(pollID, voterID string) (string, error) {
+
+    // concatenate poll ID and voter ID to get vote key
+    voteKey := pollID + voterID
 
 	// create and send request for reading an entry
-    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getVote",  Args: [][]byte{[]byte(ID)}})
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getVote",  Args: [][]byte{[]byte(voteKey)}})
     if err != nil {
-            return "", fmt.Errorf("failed to query: %v", err)
+        return "", fmt.Errorf("failed to query: %v", err)
     }
 
     return string(response.Payload), nil

@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"fmt"
+	cb "github.com/hyperledger/fabric-protos-go/common"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/event"
 	mspclient "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
@@ -106,12 +107,32 @@ func (s *SetupSDK) ChannelSetup() error {
 	return nil
 }
 
-//installs and instantiates chaincode
-func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
+// Create collection config to for chaincode instantiation
+func newCollectionConfig(colName, policy string, reqPeerCount, maxPeerCount int32, blockToLive uint64) (*cb.CollectionConfig, error) {
+	p, err := cauthdsl.FromString(policy)
+	if err != nil {
+        return nil, err
+    }
+    cpc := &cb.CollectionPolicyConfig{
+        Payload: &cb.CollectionPolicyConfig_SignaturePolicy{
+            SignaturePolicy: p,
+        },
+    }
+    return &cb.CollectionConfig{
+        Payload: &cb.CollectionConfig_StaticCollectionConfig{
+            StaticCollectionConfig: &cb.StaticCollectionConfig{
+                Name:              colName,
+                MemberOrgsPolicy:  cpc,
+                RequiredPeerCount: reqPeerCount,
+                MaximumPeerCount:  maxPeerCount,
+                BlockToLive:       blockToLive,
+            },
+        },
+    }, nil
+}
 
-	//verification prints:
-//	fmt.Println(s.ChaincodePath)
-//	fmt.Println(s.ChaincodeGoPath)
+// Installs and instantiates chaincode
+func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 
 	// Create the chaincode package that will be sent to the peers
 	ccPackage, err := packager.NewCCPackage(s.ChaincodePath, s.ChaincodeGoPath)
@@ -131,7 +152,53 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 	// Set up chaincode policy
 	ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
 
-	resp, err := s.mgmt.InstantiateCC(s.ChannelID, resmgmt.InstantiateCCRequest{Name: s.ChainCodeID, Path: s.ChaincodeGoPath, Version: "0", Args: [][]byte{[]byte("init")}, Policy: ccPolicy})
+	// Create collection config 1 for collectionVote
+	var collCfg1RequiredPeerCount, collCfg1MaximumPeerCount int32
+	var collCfg1BlockToLive uint64
+
+	collCfg1Name              := "collectionVote"
+	collCfg1BlockToLive       = 1000000
+	collCfg1RequiredPeerCount = 0
+	collCfg1MaximumPeerCount  = 3
+	collCfg1Policy            := "OR('Org1MSP.member','Org2MSP.member')"
+
+	collCfg1, err := newCollectionConfig(collCfg1Name,collCfg1Policy, collCfg1RequiredPeerCount, collCfg1MaximumPeerCount, collCfg1BlockToLive)
+	if err != nil {
+	    return errors.WithMessage(err, "failed to create collection config 1")
+	}
+
+	// Create collection config 1 for collectionVote
+	var collCfg2RequiredPeerCount, collCfg2MaximumPeerCount int32
+	var collCfg2BlockToLive uint64 
+
+	collCfg2Name              := "collectionVotePrivateDetails"
+	collCfg2BlockToLive       = 3
+	collCfg2RequiredPeerCount = 0
+	collCfg2MaximumPeerCount  = 3
+	collCfg2Policy            := "OR('Org2MSP.member')"
+
+	collCfg2, err := newCollectionConfig(collCfg2Name,collCfg2Policy, collCfg2RequiredPeerCount, collCfg2MaximumPeerCount, collCfg2BlockToLive)
+	if err != nil {
+	    return errors.WithMessage(err, "failed to create collection config 1")
+	}
+
+	cfg := []*cb.CollectionConfig{collCfg1, collCfg2}
+
+	// instantiate chaincode with cc policy and collection configs
+	resp, err := s.mgmt.InstantiateCC(
+		// Channel ID
+		s.ChannelID, 
+		// InstantiateCCRequest struct
+		resmgmt.InstantiateCCRequest{
+			Name: s.ChainCodeID, 
+			Path: s.ChaincodeGoPath, 
+			Version: "0", 
+			Args: [][]byte{[]byte("init")}, 
+			Policy: ccPolicy, 
+			CollConfig: cfg,
+		},
+		// options
+		resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 	if err != nil || resp.TransactionID == "" {
 		return errors.WithMessage(err, "failed to instantiate the chaincode")
 	}
