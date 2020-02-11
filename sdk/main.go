@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/off-grid-block/vote/sdk/blockchain"
+	"github.com/off-grid-block/vote/sdk/web"
 	"os"
 	"bufio"
 	"strings"
@@ -67,5 +68,11 @@ func main() {
 		fmt.Printf("Failed to install and instantiate chaincode: %v\n", err)
 		return
 	}
+
+	app := &web.Application{
+		Fabric: &fSetup,
+	}
+
+	web.Serve(app)
 
 }
