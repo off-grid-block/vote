@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/off-grid-block/vote/sdk/blockchain"
 	"github.com/off-grid-block/vote/sdk/web"
-	"os"
-	"bufio"
-	"strings"
+	// "os"
+	// "bufio"
+	// "strings"
 )
 
 // //function to read string
@@ -70,7 +70,7 @@ func main() {
 	}
 
 	app := &web.Application{
-		Fabric: &fSetup,
+		FabricSDK: &fSetup,
 	}
 
 	web.Serve(app)

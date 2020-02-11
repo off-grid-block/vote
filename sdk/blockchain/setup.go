@@ -139,7 +139,7 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 	if err != nil {
 		return errors.WithMessage(err, "failed to create chaincode package")
 	}
-	fmt.Println("chaincode package created")
+	fmt.Println("Chaincode package created")
 
 	// Install the chaincode to org peers
 	installCCReq := resmgmt.InstallCCRequest{Name: s.ChainCodeID, Path: s.ChaincodePath, Version: "0", Package: ccPackage}
