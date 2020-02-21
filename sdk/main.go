@@ -69,10 +69,15 @@ func main() {
 		return
 	}
 
+	err = fSetup.ClientSetup()
+	if err != nil {
+		fmt.Printf("Failed to set up client: %v\n", err)
+		return
+	}
+
 	app := &web.Application{
 		FabricSDK: &fSetup,
 	}
 
 	web.Serve(app)
-
 }
