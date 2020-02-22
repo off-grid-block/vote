@@ -194,7 +194,7 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	}
 
 	fmt.Println("- end init vote (success)")
-	return shim.Success(nil)
+	return shim.Success([]byte(voteInput.Salt))
 }
 
 // =====================================================

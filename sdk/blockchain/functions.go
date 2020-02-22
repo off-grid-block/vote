@@ -1,12 +1,10 @@
 package blockchain
 
-import(
+import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"time"
-	// "sync"
-	// "log"
 )
 
 //var mlat [1000]time.Duration
@@ -78,6 +76,22 @@ func (s *SetupSDK) GetVoteSDK(pollID, voterID string) (string, error) {
 
     return string(response.Payload), nil
 }
+
+// read private details of vote using SDK
+func (s *SetupSDK) GetVotePrivateDetailsSDK(pollID, voterID, salt string) (string, error) {
+
+    // concatenate poll ID and voter ID to get vote key
+    voteKey := pollID + voterID + salt
+
+    // create and send request for reading an entry
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getVotePrivateDetails",  Args: [][]byte{[]byte(voteKey)}})
+    if err != nil {
+        return "", fmt.Errorf("failed to query: %v", err)
+    }
+
+    return string(response.Payload), nil
+}
+
 
 //delete entry on chaincode using SDK
 func (s *SetupSDK) DeleteEntrySDK(ID string) (string, error) {

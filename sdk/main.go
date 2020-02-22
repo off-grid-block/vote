@@ -9,18 +9,6 @@ import (
 	// "strings"
 )
 
-// //function to read string
-// func userInput(request string) (inputval string) {
-// 	reader := bufio.NewReader(os.Stdin)
-// 	fmt.Println(request)
-// 	inputval, err := reader.ReadString('\n')
-// 	if err != nil {
-// 		fmt.Printf("Error %v\n", err)
-// 	}
-// 	returnval := strings.TrimRight (inputval, "\n")
-// 	return returnval
-// }
-
 func main() {
 
 	fSetup := blockchain.SetupSDK {
@@ -81,3 +69,16 @@ func main() {
 
 	web.Serve(app)
 }
+
+
+// //function to read string
+// func userInput(request string) (inputval string) {
+// 	reader := bufio.NewReader(os.Stdin)
+// 	fmt.Println(request)
+// 	inputval, err := reader.ReadString('\n')
+// 	if err != nil {
+// 		fmt.Printf("Error %v\n", err)
+// 	}
+// 	returnval := strings.TrimRight (inputval, "\n")
+// 	return returnval
+// }
