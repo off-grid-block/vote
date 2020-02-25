@@ -29,7 +29,6 @@ type votePrivateDetails struct {
 	VoterID		string 	`json:"voterID"`
 	Salt 		string 	`json:"salt"`
 	VoteHash 	string 	`json:"voteHash"`
-
 }
 
 func main() {

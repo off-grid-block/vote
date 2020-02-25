@@ -7,12 +7,14 @@ import (
 	// "os"
 	// "bufio"
 	// "strings"
+
+	ipfs "github.com/ipfs/go-ipfs-api"
 )
 
 func main() {
 
 	fSetup := blockchain.SetupSDK {
-		OrdererID: "orderer.example.com",
+		OrdererID: 			"orderer.example.com",
 
 		ChannelID: 			"mychannel",
 		ChannelConfig: 		"/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
@@ -24,7 +26,7 @@ func main() {
 		OrgName:         	"org1",
 		ConfigFile:      	"config.yaml",
 
-		UserName: "User1",
+		UserName: 			"User1",
 	}
 
 	err := fSetup.Initialization()
@@ -63,8 +65,12 @@ func main() {
 		return
 	}
 
+	// create shell to connect to IPFS
+	sh := ipfs.NewShell("localhost:5001")
+
 	app := &web.Application{
 		FabricSDK: &fSetup,
+		IpfsShell: sh,
 	}
 
 	web.Serve(app)

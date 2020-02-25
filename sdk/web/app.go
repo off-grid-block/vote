@@ -3,22 +3,33 @@ package web
 import (
 	"github.com/off-grid-block/vote/sdk/blockchain"
 	"net/http"
+	// "io/ioutil"
 	"log"
 	"fmt"
 	"time"
 	"encoding/json"
 	"github.com/gorilla/mux"
+	ipfs "github.com/ipfs/go-ipfs-api"
 )
 
 // Struct containing Fabric SDK setup data. Objects of type
 // Application have access to the SDK's chaincode interface.
 type Application struct {
 	FabricSDK *blockchain.SetupSDK
+	IpfsShell *ipfs.Shell
 } 
 
 // PRELIMINARY DEF: struct to hold vote data.
-type Vote struct {
+type VoteContent struct {
 	YesOrNo bool
+}
+
+type FabricResponsePrivateDetails struct {
+	ObjectType 	string 	`json:"docType"`
+	PollID		string 	`json:"pollID"`
+	VoterID		string 	`json:"voterID"`
+	Salt 		string 	`json:"salt"`
+	VoteHash 	string 	`json:"voteHash"`
 }
 
 // Initialize & push votes on the Fabric network
@@ -30,7 +41,7 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 	sex := query.Get("sex")
 	age := query.Get("age")
 
-	var v Vote
+	var v VoteContent
 
 	// Decode HTTP request body and marshal into Vote struct.
 	// If the bytes in the request body do not match the fields
@@ -42,7 +53,7 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Push vote data to IPFS
-	cid, err := IpfsAddVote(v)
+	cid, err := app.IpfsAddVote(v)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -99,7 +110,22 @@ func (app *Application) getVotePrivateDetailsHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	w.Write([]byte(resp))
+	var fabResp FabricResponsePrivateDetails
+
+	err = json.Unmarshal([]byte(resp), &fabResp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println(err)
+		return
+	}
+
+	voteContentRespBytes, err := app.IpfsGetVote(fabResp.VoteHash)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(voteContentRespBytes))
 }
 
 // Homepage

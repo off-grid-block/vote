@@ -175,7 +175,7 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 	collCfg2BlockToLive       = 3
 	collCfg2RequiredPeerCount = 0
 	collCfg2MaximumPeerCount  = 3
-	collCfg2Policy            := "OR('Org2MSP.member')"
+	collCfg2Policy            := "OR('Org1MSP.member','Org2MSP.member')"
 
 	collCfg2, err := newCollectionConfig(collCfg2Name,collCfg2Policy, collCfg2RequiredPeerCount, collCfg2MaximumPeerCount, collCfg2BlockToLive)
 	if err != nil {
