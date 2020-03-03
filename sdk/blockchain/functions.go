@@ -77,6 +77,7 @@ func (s *SetupSDK) GetVoteSDK(pollID, voterID string) (string, error) {
     return string(response.Payload), nil
 }
 
+
 // read private details of vote using SDK
 func (s *SetupSDK) GetVotePrivateDetailsSDK(pollID, voterID, salt string) (string, error) {
 
@@ -85,6 +86,88 @@ func (s *SetupSDK) GetVotePrivateDetailsSDK(pollID, voterID, salt string) (strin
 
     // create and send request for reading an entry
     response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getVotePrivateDetails",  Args: [][]byte{[]byte(voteKey)}})
+    if err != nil {
+        return "", fmt.Errorf("failed to query: %v", err)
+    }
+
+    return string(response.Payload), nil
+}
+
+
+func (s *SetupSDK) GetVotePrivateDetailsHashSDK(pollID, voterID, salt string) (string, error) {
+    
+    voteKey := pollID + voterID + salt
+
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getVotePrivateDetailsHash", Args: [][]byte{[]byte(voteKey)}})
+    if err != nil {
+        return "", fmt.Errorf("failed to query: %v", err)
+    }
+
+    return string(response.Payload), nil
+}
+
+
+func (s *SetupSDK) QueryVotesByPollSDK(pollID string) (string, error) {
+
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotesByPoll", Args: [][]byte{[]byte(pollID)}})
+    if err != nil {
+        return "", fmt.Errorf("failed to query: %v", err)
+    }
+
+    return string(response.Payload), nil
+}
+
+
+// add entry of poll using SDK
+func (s *SetupSDK) InitPollSDK(PollID string, Salt string, PollHash string) (string, error) {
+
+    text := fmt.Sprintf(
+        "{\"PollID\":\"%s\",\"Salt\":\"%s\",\"PollHash\":\"%s\"}",
+        PollID,
+        Salt,
+        PollHash,
+    )
+
+    eventID := "initEvent"
+
+    // Add data to transient map (because we are using private data, all of the data will be in the transient map)
+    transientDataMap := make(map[string][]byte)
+    transientDataMap["poll"] = []byte(text)
+
+    // register chaincode event
+    registered, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+    if err != nil {
+        return "Failed to register chaincode event", err
+    }
+
+    // unregister chaincode event
+    defer s.event.Unregister(registered)
+
+    // Create a request for vote init and send it
+    response, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
+    if err != nil {
+        return "", fmt.Errorf("failed to initiate: %v", err)
+    }
+
+    // Wait for the result of the submission
+    select {
+    case ccEvent := <-notifier:
+        fmt.Printf("Received CC event: %v\n", ccEvent)
+    case <-time.After(time.Second * 10):
+        return "", fmt.Errorf("did NOT receive CC event for eventId(%s)", eventID)
+    }
+
+    return string(response.Payload), nil
+}
+
+// read private details of vote using SDK
+func (s *SetupSDK) GetPollPrivateDetailsSDK(pollID, salt string) (string, error) {
+
+    // concatenate poll ID and salt to get cc key
+    ccKey := pollID + salt
+
+    // create and send request for reading an entry
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(ccKey)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -122,15 +205,15 @@ func (s *SetupSDK) DeleteEntrySDK(ID string) (string, error) {
 	return string(resp.Payload), nil
 }
 
-//search by username on chaincode using SDK
-func (s *SetupSDK) SearchByOwnerSDK(Owner string) (string, error) {
+// //search by username on chaincode using SDK
+// func (s *SetupSDK) SearchByOwnerSDK(Owner string) (string, error) {
 
-	//creat and send request for reading an entry
-        response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "searchByOwner",  Args: [][]byte{[]byte(Owner)}})
-        if err != nil {
-                return "", fmt.Errorf("failed to query: %v", err)
-        }
+// 	//creat and send request for reading an entry
+//         response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "searchByOwner",  Args: [][]byte{[]byte(Owner)}})
+//         if err != nil {
+//                 return "", fmt.Errorf("failed to query: %v", err)
+//         }
 
-        return string(response.Payload), nil
-}
+//         return string(response.Payload), nil
+// }
 

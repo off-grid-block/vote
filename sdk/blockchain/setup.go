@@ -167,7 +167,7 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 	    return errors.WithMessage(err, "failed to create collection config 1")
 	}
 
-	// Create collection config 1 for collectionVote
+	// Create collection config 2 for collectionVotePrivateDetails
 	var collCfg2RequiredPeerCount, collCfg2MaximumPeerCount int32
 	var collCfg2BlockToLive uint64 
 
@@ -179,10 +179,40 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 
 	collCfg2, err := newCollectionConfig(collCfg2Name,collCfg2Policy, collCfg2RequiredPeerCount, collCfg2MaximumPeerCount, collCfg2BlockToLive)
 	if err != nil {
-	    return errors.WithMessage(err, "failed to create collection config 1")
+	    return errors.WithMessage(err, "failed to create collection config 2")
 	}
 
-	cfg := []*cb.CollectionConfig{collCfg1, collCfg2}
+	// Create collection config 3 for collectionPoll
+	var collCfg3RequiredPeerCount, collCfg3MaximumPeerCount int32
+	var collCfg3BlockToLive uint64 
+
+	collCfg3Name              := "collectionPoll"
+	collCfg3BlockToLive       = 3
+	collCfg3RequiredPeerCount = 0
+	collCfg3MaximumPeerCount  = 3
+	collCfg3Policy            := "OR('Org1MSP.member','Org2MSP.member')"
+
+	collCfg3, err := newCollectionConfig(collCfg3Name,collCfg3Policy, collCfg3RequiredPeerCount, collCfg3MaximumPeerCount, collCfg3BlockToLive)
+	if err != nil {
+	    return errors.WithMessage(err, "failed to create collection config 3")
+	}
+
+	// Create collection config 4 for collectionPollPrivateDetails
+	var collCfg4RequiredPeerCount, collCfg4MaximumPeerCount int32
+	var collCfg4BlockToLive uint64 
+
+	collCfg4Name              := "collectionPollPrivateDetails"
+	collCfg4BlockToLive       = 3
+	collCfg4RequiredPeerCount = 0
+	collCfg4MaximumPeerCount  = 3
+	collCfg4Policy            := "OR('Org1MSP.member','Org2MSP.member')"
+
+	collCfg4, err := newCollectionConfig(collCfg4Name,collCfg4Policy, collCfg4RequiredPeerCount, collCfg4MaximumPeerCount, collCfg4BlockToLive)
+	if err != nil {
+	    return errors.WithMessage(err, "failed to create collection config 4")
+	}
+
+	cfg := []*cb.CollectionConfig{collCfg1, collCfg2, collCfg3, collCfg4}
 
 	// instantiate chaincode with cc policy and collection configs
 	resp, err := s.mgmt.InstantiateCC(

@@ -32,23 +32,27 @@ func (app *Application) IpfsAddVote(v VoteContent) (string, error) {
 	return cid, nil
 }
 
-// func (app *Application) IpfsGetVote(cid string) (*ipfs.Response, error) {
-// 	var resp *ipfs.Response
+func (app *Application) IpfsAddPoll(p PollContent) (string, error) {
+	var cid string
 
-// 	resp, err := app.IpfsShell.Request("get", cid).Option("create", true).Send(context.Background())
-// 	if err != nil {
-// 		return resp, err
-// 	}
+	pollBytes, err := json.Marshal(p)
+	if err != nil {
+		return cid, err
+	}
 
-// 	if resp.Error != nil {
-// 		return resp, resp.Error
-// 	}
+	// create io reader of bytes
+	reader := bytes.NewReader(pollBytes)
 
-// 	return resp, nil
-// }
+	// add byte data to IPFS
+	cid, err = app.IpfsShell.Add(reader)
+	if err != nil {
+		return cid, err
+	}
 
-func (app *Application) IpfsGetVote(cid string) (string, error) {
+	return cid, nil
+}
 
+func (app *Application) IpfsGetData(cid string) (string, error) {
 	tmpFilePath := "/tmp/vote" + GenerateSalt()
 	app.IpfsShell.Get(cid, tmpFilePath)
 
@@ -58,7 +62,6 @@ func (app *Application) IpfsGetVote(cid string) (string, error) {
 	}
 	os.Remove(tmpFilePath)
 	return string(data), nil
-
 }
 
 // https://yourbasic.org/golang/generate-random-string/
