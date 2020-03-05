@@ -9,7 +9,6 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 )
 
-
 type vote struct {
 	ObjectType 	string 	`json:"docType"`
 	PollID		string 	`json:"pollID"`
@@ -26,12 +25,10 @@ type votePrivateDetails struct {
 	VoteHash 	string 	`json:"voteHash"`
 }
 
-
 // ============================================================
 // initVote - create a new vote and store into chaincode state
 // ============================================================
 func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-
 
 	type voteTransientInput struct {
 		PollID		string 	`json:"pollID"`
@@ -43,7 +40,6 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	}
 
 	fmt.Println("- start init vote")
-
 
 	if len(args) != 0 {
 		return shim.Error("Private data should be passed in transient map.")
@@ -93,9 +89,17 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 
 	if len(voteInput.VoteHash) == 0 {
 		return shim.Error("vote hash field must be a non-empty string")
-	} 
+	}
 
-	existingVoteAsBytes, err := stub.GetPrivateData("collectionVote", voteInput.PollID + voteInput.VoterID)
+	// create a composite key for vote collection using the poll ID and voter ID
+	attrVoteCompositeKey := []string{voteInput.PollID, voteInput.VoterID}
+	voteCompositeKey, err := stub.CreateCompositeKey("vote", attrVoteCompositeKey)
+	if err != nil {
+		return shim.Error("Failed to create composite key for vote: " + err.Error())
+	}
+
+	// check if value for voteCompositeKey already exists
+	existingVoteAsBytes, err := stub.GetPrivateData("collectionVote", voteCompositeKey)
 	if err != nil {
 		return shim.Error("Failed to get vote: " + err.Error())
 	} else if existingVoteAsBytes != nil {
@@ -115,9 +119,17 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 		return shim.Error(err.Error())
 	}
 
-	err = stub.PutPrivateData("collectionVote", voteInput.PollID + voteInput.VoterID, voteJSONasBytes)
+	// put state for voteCompositeKey
+	err = stub.PutPrivateData("collectionVote", voteCompositeKey, voteJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
+	}
+
+	// create a composite key for vote private details collections using the poll ID, voter ID, and salt
+	attrVotePrivateDetailsCompositeKey := []string{voteInput.PollID, voteInput.VoterID, voteInput.Salt}
+	votePrivateDetailsCompositeKey, err := stub.CreateCompositeKey("vote", attrVotePrivateDetailsCompositeKey)
+	if err != nil {
+		return shim.Error("Failed to create composite key for vote private details: " + err.Error())
 	}
 
 	votePrivateDetails := &votePrivateDetails {
@@ -132,10 +144,8 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 		return shim.Error(err.Error())
 	}
 
-	err = stub.PutPrivateData(
-		"collectionVotePrivateDetails", 
-		voteInput.PollID + voteInput.VoterID + voteInput.Salt, 
-		votePrivateDetailsBytes)
+	// put state for votePrivateDetailsCompositeKey
+	err = stub.PutPrivateData("collectionVotePrivateDetails", votePrivateDetailsCompositeKey, votePrivateDetailsBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -155,11 +165,15 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 // =====================================================
 
 func (vc *VoteChaincode) getVote(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting vote key to query")
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting poll ID and voter ID to query")
 	}
 
-	voteKey := args[0]
+	voteKey, err := stub.CreateCompositeKey("vote", args)
+	if err != nil {
+		return shim.Error("Failed to create composite key in getVote(): " + err.Error())
+	}
+
 	// ==== retrieve the vote ====
 	voteAsBytes, err := stub.GetPrivateData("collectionVote", voteKey)
 	if err != nil {
@@ -176,32 +190,56 @@ func (vc *VoteChaincode) getVote(stub shim.ChaincodeStubInterface, args []string
 // ===============================================================
 
 func (vc *VoteChaincode) getVotePrivateDetails(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting vote key to query")
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting poll ID and voter ID to query")
 	}
 
-	voteKey := args[0]
-	voteAsBytes, err := stub.GetPrivateData("collectionVotePrivateDetails", voteKey)
+	iterator, err := stub.GetPrivateDataByPartialCompositeKey("collectionVotePrivateDetails", "vote", args)
 	if err != nil {
-		return shim.Error("{\"Error\":\"Failed to get private details for " + voteKey + "\"}")
+		return shim.Error("{\"Error\":\"Failed to get private details by partial composite key\"}")
+	} else if iterator == nil {
+		return shim.Error("{\"Error\":\"Vote private details with partial composite key do not exist\"}")
+	}
+
+	kv, err := iterator.Next()
+	if err != nil {
+		return shim.Error("Failed to iterate over iterator: " + err.Error())
+	}
+	privateDetailsKey := kv.GetKey()
+
+	voteAsBytes, err := stub.GetPrivateData("collectionVotePrivateDetails", privateDetailsKey)
+	if err != nil {
+		return shim.Error("{\"Error\":\"Failed to get state for " + privateDetailsKey + "\"}")
 	} else if voteAsBytes == nil {
-		return shim.Error("{\"Error\":\"Vote private details do not exist: " + voteKey + "\"}")
+		return shim.Error("{\"Error\":\"Vote does not exist: " + privateDetailsKey + "\"}")
 	}
 
 	return shim.Success(voteAsBytes)
 }
 
 func (vc *VoteChaincode) getVotePrivateDetailsHash(stub shim.ChaincodeStubInterface, args []string) peer.Response {
-	if len(args) != 1 {
+	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting vote key to query")
 	}
 
-	voteKey := args[0]
-	voteHashAsBytes, err := stub.GetPrivateDataHash("collectionVotePrivateDetails", voteKey)
+	iterator, err := stub.GetPrivateDataByPartialCompositeKey("collectionVotePrivateDetails", "vote", args)
 	if err != nil {
-		return shim.Error("{\"Error\":\"Failed to get private data hash for " + voteKey + "\"}")
+		return shim.Error("{\"Error\":\"Failed to get private details by partial composite key\"}")
+	} else if iterator == nil {
+		return shim.Error("{\"Error\":\"Vote private details with partial composite key do not exist\"}")
+	}
+
+	kv, err := iterator.Next()
+	if err != nil {
+		return shim.Error("Failed to iterate over iterator: " + err.Error())
+	}
+	privateDetailsKey := kv.GetKey()
+
+	voteHashAsBytes, err := stub.GetPrivateDataHash("collectionVotePrivateDetails", privateDetailsKey)
+	if err != nil {
+		return shim.Error("{\"Error\":\"Failed to get private data hash for " + privateDetailsKey + "\"}")
 	} else if voteHashAsBytes == nil {
-		return shim.Error("{\"Error\":\"Vote private data does not exist: " + voteKey + "\"}")
+		return shim.Error("{\"Error\":\"Vote private data does not exist: " + privateDetailsKey + "\"}")
 	}
 
 	return shim.Success(voteHashAsBytes)
