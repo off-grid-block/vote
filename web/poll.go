@@ -2,47 +2,14 @@ package web
 
 import (
 	"fmt"
+	"bytes"
 	"net/http"
-	"encoding/json"	
-	"reflect"
+	"encoding/json"
+	"encoding/gob"
 	
 	"github.com/gorilla/mux"
 )
 
-// PRELIMINARY DEF: struct to hold vote data.
-type VoteContent struct {
-	YesOrNo bool
-}
-
-type PollContent struct {
-	FirstChoice 	bool
-	SecondChoice 	bool
-	ThirdChoice		bool
-}
-
-type VoteFabricResponse struct {
-	ObjectType 	string 	`json:"docType"`
-	PollID		string 	`json:"pollID"`
-	VoterID		string 	`json:"voterID"`
-	VoterSex 	string 	`json:"voterSex"`
-	VoterAge	int 	`json:"voterAge"`
-	PrivateHash string 	`json:"privateHash"`
-}
-
-type VoteFabricResponsePrivateDetails struct {
-	ObjectType 	string 	`json:"docType"`
-	PollID		string 	`json:"pollID"`
-	VoterID		string 	`json:"voterID"`
-	Salt 		string 	`json:"salt"`
-	VoteHash 	string 	`json:"voteHash"`
-}
-
-type PollFabricResponsePrivateDetails struct {
-	ObjectType 	string 	`json:"docType"`
-	PollID		string 	`json:"pollID"`
-	Salt 		string 	`json:"salt"`
-	PollHash 	string 	`json:"pollHash"`
-}
 
 // Retrieve vote from the Fabric network
 func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
@@ -72,8 +39,6 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Println(reflect.TypeOf(votePrivateDetailsHash))
 
 	// *** TODO ***: decode unicode votePrivateDetailsHash to string
 
@@ -119,6 +84,35 @@ func (app *Application) getVotePrivateDetailsHandler(w http.ResponseWriter, r *h
 	w.Write([]byte(voteContentResp))
 }
 
+func (app *Application) getVotePrivateDetailsHashHandler(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	pollID := vars["pollid"]
+	voterID := vars["voterid"]
+
+	resp, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(resp))
+}
+
+func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	pollID := vars["pollid"]
+
+	resp, err := app.FabricSDK.GetPollSDK(pollID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(resp))
+}
+
 // Retrieve vote from the Fabric network
 func (app *Application) getPollPrivateDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -155,6 +149,66 @@ func (app *Application) queryVotesByPollHandler(w http.ResponseWriter, r *http.R
 	pollID := vars["pollid"]
 
 	resp, err := app.FabricSDK.QueryVotesByPollSDK(pollID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(resp))
+}
+
+
+func (app *Application) queryVotePrivateDetailsByPollHandler(w http.ResponseWriter, r *http.Request) {
+	
+	vars := mux.Vars(r)
+	pollID := vars["pollid"]
+
+	cidList, err := app.FabricSDK.QueryVotePrivateDetailsByPollSDK(pollID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var votesByPoll []string
+
+	for _, cid := range cidList {
+		vote, err := app.IpfsGetData(cid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		votesByPoll = append(votesByPoll, vote)
+	}
+
+	var buf bytes.Buffer
+
+	enc := gob.NewEncoder(&buf)
+	err = enc.Encode(votesByPoll)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(buf.Bytes())
+}
+
+func (app *Application) updatePollStatusHandler(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	pollID := vars["pollid"]
+
+	var body UpdatePollStatusRequestBody
+
+	// Decode HTTP request body and marshal into Vote struct.
+	// If the bytes in the request body do not match the fields
+	// of the Vote struct, the operation will fail.
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	resp, err := app.FabricSDK.UpdatePollStatusSDK(pollID, body.Status)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

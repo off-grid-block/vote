@@ -17,7 +17,7 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 	sex := query.Get("sex")
 	age := query.Get("age")
 
-	var v VoteContent
+	var v InitVoteRequestBody
 
 	// Decode HTTP request body and marshal into Vote struct.
 	// If the bytes in the request body do not match the fields
@@ -58,7 +58,7 @@ func (app *Application) initPollHandler(w http.ResponseWriter, r *http.Request) 
 	query := r.URL.Query()
 	pollID := query.Get("pollid")
 
-	var p PollContent
+	var p InitPollRequestBody
 
 	// Decode HTTP request body and marshal into Vote struct.
 	// If the bytes in the request body do not match the fields

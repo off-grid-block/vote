@@ -2,14 +2,13 @@ package web
 
 import (
 	"bytes"
-	// "context"
 	"encoding/json"
 	"io/ioutil"
 	"os"
 	// ipfs "github.com/ipfs/go-ipfs-api"
 )
 
-func (app *Application) IpfsAddVote(v VoteContent) (string, error) {
+func (app *Application) IpfsAddVote(v InitVoteRequestBody) (string, error) {
 	var cid string
 
 	voteBytes, err := json.Marshal(v)
@@ -29,7 +28,7 @@ func (app *Application) IpfsAddVote(v VoteContent) (string, error) {
 	return cid, nil
 }
 
-func (app *Application) IpfsAddPoll(p PollContent) (string, error) {
+func (app *Application) IpfsAddPoll(p InitPollRequestBody) (string, error) {
 	var cid string
 
 	pollBytes, err := json.Marshal(p)

@@ -3,19 +3,12 @@ package blockchain
 import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	// "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"time"
+    "bytes"
+    "encoding/gob"
 )
 
-//var mlat [1000]time.Duration
-
-// // Function to measure latency
-// func (s *blockchainSDK.SetupSDK) GetLatency(start time.Time, name string, t int) {
-//     elapsed := time.Since(start)
-//     s.Latency[t] = elapsed
-
-//     log.Printf("%s latency: %s", name, s.Latency[t])
-// }
 
 // add entry using SDK
 func (s *SetupSDK) InitVoteSDK(PollID string, VoterID string, VoterSex string, VoterAge string, VoteHash string) (string, error) {
@@ -121,6 +114,26 @@ func (s *SetupSDK) GetVotePrivateDetailsHashSDK(pollID, voterID string) (string,
     return string(response.Payload), nil
 }
 
+// query the private details of a vote by poll
+func (s *SetupSDK) QueryVotePrivateDetailsByPollSDK(pollID string) ([]string, error) {
+
+    var cidList []string
+
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotePrivateDetailsByPoll",  Args: [][]byte{[]byte(pollID)}})
+    if err != nil {
+        return cidList, fmt.Errorf("failed to query: %v", err)
+    }
+
+    buf := bytes.NewBuffer(response.Payload)
+    dec := gob.NewDecoder(buf)
+    err = dec.Decode(&cidList)
+    if err != nil {
+        return cidList, fmt.Errorf("failed to query vote private details by poll: %v\n", err)
+    }
+
+    return cidList, nil
+}
+
 // query votes of a particular poll
 func (s *SetupSDK) QueryVotesByPollSDK(pollID string) (string, error) {
 
@@ -188,14 +201,9 @@ func (s *SetupSDK) InitPollSDK(PollID string, PollHash string) (string, error) {
     return string(response.Payload), nil
 }
 
-// read private details of vote using SDK
-func (s *SetupSDK) GetPollPrivateDetailsSDK(pollID string) (string, error) {
+func (s *SetupSDK) GetPollSDK(pollID string) (string, error) {
 
-    // concatenate poll ID and salt to get cc key
-    ccKey := pollID
-
-    // create and send request for reading an entry
-    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(ccKey)}})
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getPoll",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -203,44 +211,71 @@ func (s *SetupSDK) GetPollPrivateDetailsSDK(pollID string) (string, error) {
     return string(response.Payload), nil
 }
 
-//delete entry on chaincode using SDK
-func (s *SetupSDK) DeleteEntrySDK(ID string) (string, error) {
+// read private details of vote using SDK
+func (s *SetupSDK) GetPollPrivateDetailsSDK(pollID string) (string, error) {
 
-	//register event
-	eventID := "deleteEvent"
-	reg, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
-	if err != nil {
-		return "", err
-	}
-	defer s.event.Unregister(reg)
+    // create and send request for reading an entry
+    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(pollID)}})
+    if err != nil {
+        return "", fmt.Errorf("failed to query: %v", err)
+    }
 
-	//create a request for deletion and sent it
-	resp, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "deleteEntry", Args: [][]byte{[]byte(ID)} })
-	if err != nil {
-		return "", fmt.Errorf("failed to delete: %v",err)
-	}
-
-	// Wait for the result of the submission
-        var ccEvent *fab.CCEvent
-        select {
-        case ccEvent = <-notifier:
-                fmt.Printf("Received CC event: %v\n", ccEvent)
-        case <-time.After(time.Second * 20):
-                return "", fmt.Errorf("did NOT receive CC event for eventId(%s)", eventID)
-        }
-
-	return string(resp.Payload), nil
+    return string(response.Payload), nil
 }
 
-// //search by username on chaincode using SDK
-// func (s *SetupSDK) SearchByOwnerSDK(Owner string) (string, error) {
+func (s *SetupSDK) UpdatePollStatusSDK(pollID, status string) (string, error) {
 
-// 	//creat and send request for reading an entry
-//         response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "searchByOwner",  Args: [][]byte{[]byte(Owner)}})
-//         if err != nil {
-//                 return "", fmt.Errorf("failed to query: %v", err)
+    eventID := "updateEvent"
+
+    // register chaincode event
+    registered, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+    if err != nil {
+        return "Failed to register chaincode event", err
+    }
+    defer s.event.Unregister(registered)
+
+    // Create a request for poll update and send it
+    response, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "updatePollStatus", Args: [][]byte{[]byte(pollID), []byte(status)}})
+    if err != nil {
+        return "", fmt.Errorf("failed to update: %v", err)
+    }
+
+    // Wait for the result of the submission
+    select {
+    case ccEvent := <-notifier:
+        fmt.Printf("Received CC event: %v\n", ccEvent)
+    case <-time.After(time.Second * 10):
+        return "", fmt.Errorf("did NOT receive CC event for eventId(%s)", eventID)
+    }
+
+    return string(response.Payload), nil
+}
+
+// //delete entry on chaincode using SDK
+// func (s *SetupSDK) DeleteEntrySDK(ID string) (string, error) {
+
+// 	//register event
+// 	eventID := "deleteEvent"
+// 	reg, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	defer s.event.Unregister(reg)
+
+// 	//create a request for deletion and sent it
+// 	resp, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "deleteEntry", Args: [][]byte{[]byte(ID)} })
+// 	if err != nil {
+// 		return "", fmt.Errorf("failed to delete: %v",err)
+// 	}
+
+// 	// Wait for the result of the submission
+//         var ccEvent *fab.CCEvent
+//         select {
+//         case ccEvent = <-notifier:
+//                 fmt.Printf("Received CC event: %v\n", ccEvent)
+//         case <-time.After(time.Second * 20):
+//                 return "", fmt.Errorf("did NOT receive CC event for eventId(%s)", eventID)
 //         }
 
-//         return string(response.Payload), nil
+// 	return string(resp.Payload), nil
 // }
-

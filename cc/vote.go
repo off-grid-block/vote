@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"strings"
+	"bytes"
 	"encoding/json"
+	"encoding/gob"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -91,6 +93,31 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 		return shim.Error("vote hash field must be a non-empty string")
 	}
 
+	var p poll
+
+	existingPollAsBytes, err := stub.GetPrivateData("collectionPoll", voteInput.PollID)
+	if err != nil {
+		return shim.Error("Failed to get associated poll: " + err.Error())
+	} else if existingPollAsBytes == nil {
+		return shim.Error("Poll does not exist: " + voteInput.PollID)
+	}
+
+	err = json.Unmarshal(existingPollAsBytes, &p)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	// Increment num votes of poll
+	p.NumVotes++
+	pollJSONasBytes, err := json.Marshal(p)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	err = stub.PutPrivateData("collectionPoll", voteInput.PollID, pollJSONasBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
 	// create a composite key for vote collection using the poll ID and voter ID
 	attrVoteCompositeKey := []string{voteInput.PollID, voteInput.VoterID}
 	voteCompositeKey, err := stub.CreateCompositeKey("vote", attrVoteCompositeKey)
@@ -157,7 +184,7 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	}
 
 	fmt.Println("- end init vote (success)")
-	return shim.Success([]byte(voteInput.Salt))
+	return shim.Success(nil)
 }
 
 // =====================================================
@@ -185,9 +212,9 @@ func (vc *VoteChaincode) getVote(stub shim.ChaincodeStubInterface, args []string
 	return shim.Success(voteAsBytes)
 }
 
-// ===============================================================
-// getVotePrivateDetails - retrieve vote hash from chaincode state
-// ===============================================================
+// ==========================================================================
+// getVotePrivateDetails - retrieve vote private details from chaincode state
+// ==========================================================================
 
 func (vc *VoteChaincode) getVotePrivateDetails(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 2 {
@@ -200,6 +227,8 @@ func (vc *VoteChaincode) getVotePrivateDetails(stub shim.ChaincodeStubInterface,
 	} else if iterator == nil {
 		return shim.Error("{\"Error\":\"Vote private details with partial composite key do not exist\"}")
 	}
+
+	defer iterator.Close()
 
 	kv, err := iterator.Next()
 	if err != nil {
@@ -217,6 +246,10 @@ func (vc *VoteChaincode) getVotePrivateDetails(stub shim.ChaincodeStubInterface,
 	return shim.Success(voteAsBytes)
 }
 
+// ==============================================================
+// getVotePrivateDetailsHash - retrieve hash of value from ledger
+// ==============================================================
+
 func (vc *VoteChaincode) getVotePrivateDetailsHash(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting vote key to query")
@@ -228,6 +261,8 @@ func (vc *VoteChaincode) getVotePrivateDetailsHash(stub shim.ChaincodeStubInterf
 	} else if iterator == nil {
 		return shim.Error("{\"Error\":\"Vote private details with partial composite key do not exist\"}")
 	}
+
+	defer iterator.Close()
 
 	kv, err := iterator.Next()
 	if err != nil {
@@ -245,9 +280,9 @@ func (vc *VoteChaincode) getVotePrivateDetailsHash(stub shim.ChaincodeStubInterf
 	return shim.Success(voteHashAsBytes)
 }
 
-// =================================================
+// ================================================
 // amendVote - replace vote hash with new vote hash
-// =================================================
+// ================================================
 
 func (vc *VoteChaincode) amendVote(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
@@ -316,6 +351,55 @@ func (vc *VoteChaincode) amendVote(stub shim.ChaincodeStubInterface, args []stri
 	fmt.Println("- end amend vote (success)")
 	return shim.Success(nil)
 }
+
+// ===================================================================
+// getVotePrivateDetailsByPoll - retrieve vote private details by poll
+// ===================================================================
+
+func (vc *VoteChaincode) queryVotePrivateDetailsByPoll(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting poll ID")
+	}
+
+	iterator, err := stub.GetPrivateDataByPartialCompositeKey("collectionVotePrivateDetails", "vote", args)
+	if err != nil {
+		return shim.Error("{\"Error\":\"Failed to get private details by partial composite key\"}")
+	} else if iterator == nil {
+		return shim.Error("{\"Error\":\"Vote private details with partial composite key do not exist\"}")
+	}
+	defer iterator.Close()
+
+	// populate an array of strings with the hashes of the votes
+	var hashes []string
+	// hashes := []string{}
+
+	for iterator.HasNext() {
+		kv, err := iterator.Next()
+		if err != nil {
+			return shim.Error("Failed to iterate over iterator: " + err.Error())
+		}
+
+		var v votePrivateDetails
+
+		err = json.Unmarshal(kv.GetValue(), &v)
+		if err != nil {
+			return shim.Error("Failed to unmarshal vote private details: " + err.Error())
+		}
+		hashes = append(hashes, v.VoteHash)
+	}
+
+	// encode []string into []byte
+	var hashesBuf bytes.Buffer
+
+	enc := gob.NewEncoder(&hashesBuf)
+	err = enc.Encode(hashes)
+	if err != nil {
+		return shim.Error("Error during byte encoding of hashes: " + err.Error())
+	}
+
+	return shim.Success(hashesBuf.Bytes())
+}
+
 
 
 // ===== Parametrized rich queries =========================================================

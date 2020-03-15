@@ -45,16 +45,22 @@ func (vc *VoteChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response 
 		return vc.getVotePrivateDetailsHash(stub, args)
 	case "amendVote":
 		return vc.amendVote(stub, args)
-	case "queryVotesByPoll":							// parametrized rich query w/ poll ID
+	case "queryVotePrivateDetailsByPoll":
+		return vc.queryVotePrivateDetailsByPoll(stub, args)
+	case "queryVotesByPoll":								// parametrized rich query w/ poll ID
 		return vc.queryVotesByPoll(stub, args)
-	case "queryVotesByVoter":							// parametrized rich query w/ voter ID
+	case "queryVotesByVoter":								// parametrized rich query w/ voter ID
 		return vc.queryVotesByVoter(stub, args)			
-	case "queryVotes":									// ad hoc rich query
+	case "queryVotes":										// ad hoc rich query
 		return vc.queryVotes(stub, args)
 	case "initPoll":
 		return vc.initPoll(stub, args)
+	case "getPoll":
+		return vc.getPoll(stub, args)
 	case "getPollPrivateDetails":
 		return vc.getPollPrivateDetails(stub, args)
+	case "updatePollStatus":
+		return vc.updatePollStatus(stub, args)
 	}
 
 	fmt.Println("invoke did not find fn: " + fn)
