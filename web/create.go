@@ -35,13 +35,6 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	// Print out values of arguments to initVote
-	fmt.Println("poll ID:   ", pollID)
-	fmt.Println("voter ID:  ", voterID)
-	fmt.Println("voter sex: ", sex)
-	fmt.Println("voter age: ", age)
-	fmt.Println("CID:       ", cid)
-
 	// Call InitVoteSDK() to initialize a vote on the Fabric network
 	resp, err := app.FabricSDK.InitVoteSDK(pollID, voterID, sex, age, cid)
 	if err != nil {
@@ -75,10 +68,6 @@ func (app *Application) initPollHandler(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	// Print out values of arguments to initVote
-	fmt.Println("poll ID:   ", pollID)
-	fmt.Println("CID:       ", cid)
 
 	// Call InitVoteSDK() to initialize a vote on the Fabric network
 	resp, err := app.FabricSDK.InitPollSDK(pollID, cid)
