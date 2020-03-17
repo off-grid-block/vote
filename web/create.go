@@ -1,11 +1,8 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 	"encoding/json"
-
-	// "github.com/gorilla/mux"
 )
 
 // Initialize & push votes on the Fabric network
@@ -29,7 +26,7 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Push vote data to IPFS
-	cid, err := app.IpfsAddVote(v)
+	cid, err := app.IpfsAdd(v)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -63,7 +60,7 @@ func (app *Application) initPollHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Push vote data to IPFS
-	cid, err := app.IpfsAddPoll(p)
+	cid, err := app.IpfsAdd(p)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

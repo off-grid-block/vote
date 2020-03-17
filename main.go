@@ -15,18 +15,15 @@ func main() {
 
 	fSetup := blockchain.SetupSDK {
 		OrdererID: 			"orderer.example.com",
-
 		ChannelID: 			"mychannel",
-		ChannelConfig: 		"/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
-
-		ChainCodeID: 		"vote",
-		ChaincodeGoPath: 	"/Users/brianli/deon",
-		ChaincodePath:   	"vote/cc",
-		OrgAdmin:        	"Admin",
-		OrgName:         	"org1",
-		ConfigFile:      	"config.yaml",
-
-		UserName: 			"User1",
+		ChannelConfig:		"/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
+		ChainCodeID:		"vote",
+		ChaincodeGoPath:	"/Users/brianli/deon",
+		ChaincodePath:		"vote/cc",
+		OrgAdmin:			"Admin",
+		OrgName:			"org1",
+		ConfigFile:			"config.yaml",
+		UserName:			"User1",
 	}
 
 	err := fSetup.Initialization()

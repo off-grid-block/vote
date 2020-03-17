@@ -75,7 +75,7 @@ func (app *Application) getVotePrivateDetailsHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	voteContentResp, err := app.IpfsGetData(fabResp.VoteHash)
+	voteContentResp, err := app.IpfsGet(fabResp.VoteHash)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -134,7 +134,7 @@ func (app *Application) getPollPrivateDetailsHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	pollContentResp, err := app.IpfsGetData(fabResp.PollHash)
+	pollContentResp, err := app.IpfsGet(fabResp.PollHash)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -172,7 +172,7 @@ func (app *Application) queryVotePrivateDetailsByPollHandler(w http.ResponseWrit
 	var votesByPoll []string
 
 	for _, cid := range cidList {
-		vote, err := app.IpfsGetData(cid)
+		vote, err := app.IpfsGet(cid)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
