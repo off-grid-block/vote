@@ -9,6 +9,40 @@ import (
 )
 
 
+type vote struct {
+	ObjectType 	string 	`json:"docType"`
+	PollID		string 	`json:"pollID"`
+	VoterID		string 	`json:"voterID"`
+	VoterSex 	string 	`json:"voterSex"`
+	VoterAge	int 	`json:"voterAge"`
+}
+
+
+type votePrivateDetails struct {
+	ObjectType 	string 	`json:"docType"`
+	PollID		string 	`json:"pollID"`
+	VoterID		string 	`json:"voterID"`
+	Salt 		string 	`json:"salt"`
+	VoteHash 	string 	`json:"voteHash"`
+}
+
+
+type poll struct {
+	ObjectType 	string 	`json:"docType"`
+	PollID		string 	`json:"pollID"`
+	Status		string 	`json:"status"`
+	NumVotes	int 	`json:"numVotes"`
+}
+
+
+type pollPrivateDetails struct {
+	ObjectType 	string 	`json:"docType"`
+	PollID		string 	`json:"pollID"`
+	Salt 		string 	`json:"salt"`
+	PollHash 	string 	`json:"pollHash"`
+}
+
+
 type VoteChaincode struct {
 }
 
@@ -44,7 +78,7 @@ func (vc *VoteChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response 
 	case "getVotePrivateDetailsHash":
 		return vc.getVotePrivateDetailsHash(stub, args)
 	case "amendVote":
-		return vc.amendVote(stub, args)
+		return vc.updateVote(stub, args)
 	case "queryVotePrivateDetailsByPoll":
 		return vc.queryVotePrivateDetailsByPoll(stub, args)
 	case "queryVotesByPoll":								// parametrized rich query w/ poll ID

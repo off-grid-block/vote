@@ -19,41 +19,50 @@ type Application struct {
 
 // PRELIMINARY DEF: struct to hold vote data.
 type InitVoteRequestBody struct {
-	YesOrNo bool
+	PollID 			string
+	VoterID 		string
+	Sex 			string
+	Age 			string
+	Content 		struct {
+		YesOrNo 		bool
+	}
 }
 
 type InitPollRequestBody struct {
-	FirstChoice 	bool
-	SecondChoice 	bool
-	ThirdChoice		bool
+	PollID 			string
+	Content 		struct {
+		FirstChoice 	bool
+		SecondChoice 	bool
+		ThirdChoice		bool	
+	}
 }
 
 type UpdatePollStatusRequestBody struct {
-	Status 		string 	`json:"status"`
+	Status 			string 	`json:"status"`
 }
 
-type VoteFabricResponse struct {
-	ObjectType 	string 	`json:"docType"`
-	PollID		string 	`json:"pollID"`
-	VoterID		string 	`json:"voterID"`
-	VoterSex 	string 	`json:"voterSex"`
-	VoterAge	int 	`json:"voterAge"`
-	PrivateHash string 	`json:"privateHash"`
+type VoteResponseSDK struct {
+	ObjectType 		string 	`json:"docType"`
+	PollID			string 	`json:"pollID"`
+	VoterID			string 	`json:"voterID"`
+	VoterSex 		string 	`json:"voterSex"`
+	VoterAge		int 	`json:"voterAge"`
+	PrivateHash 	string 	`json:"privateHash"`
 }
 
-type VoteFabricResponsePrivateDetails struct {
-	ObjectType 	string 	`json:"docType"`
-	PollID		string 	`json:"pollID"`
-	VoterID		string 	`json:"voterID"`
-	Salt 		string 	`json:"salt"`
-	VoteHash 	string 	`json:"voteHash"`
+type VotePrivateDetailsResponseSDK struct {
+	ObjectType 		string 	`json:"docType"`
+	PollID			string 	`json:"pollID"`
+	VoterID			string 	`json:"voterID"`
+	Salt 			string 	`json:"salt"`
+	VoteHash 		string 	`json:"voteHash"`
 }
 
-type PollFabricResponsePrivateDetails struct {
-	ObjectType 	string 	`json:"docType"`
-	PollID		string 	`json:"pollID"`
-	Salt 		string 	`json:"salt"`
-	PollHash 	string 	`json:"pollHash"`
+type PollPrivateDetailsResponseSDK struct {
+	ObjectType 		string 	`json:"docType"`
+	PollID			string 	`json:"pollID"`
+	Salt 			string 	`json:"salt"`
+	PollHash 		string 	`json:"pollHash"`
 }
 
 // Homepage
@@ -74,55 +83,49 @@ func Serve(app *Application) {
 	/*********************************/
 	poll := api.PathPrefix("/poll").Subrouter()
 
-	// handler for getVotePrivateDetails
-	poll.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/private", app.getVotePrivateDetailsHandler).Methods("GET")
+	// handler for initPoll
+	poll.HandleFunc("/create", app.initPollHandler).Methods("POST")
 
-	// handler for getVotePrivateDetailsHash
-	poll.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/hash", app.getVotePrivateDetailsHashHandler).Methods("GET")
-
-	// handler for getVote
-	poll.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}", app.getVoteHandler).Methods("GET")
-
-	// handler for queryVotePrivateDetailsByPoll
-	poll.HandleFunc("/{pollid:[0-9]+}/all/private", app.queryVotePrivateDetailsByPollHandler).Methods("GET")
-
-	// handler for queryVotesByPoll
-	poll.HandleFunc("/{pollid:[0-9]+}/all", app.queryVotesByPollHandler).Methods("GET")
+	// handler for updatePollStatus
+	poll.HandleFunc("/{pollid:[0-9]+}/status", app.updatePollStatusHandler).Methods("PUT")
 
 	// handler for getPoll
-	poll.HandleFunc("/{pollid:[0-9]+}/summary", app.getPollHandler).Methods("GET")
+	poll.HandleFunc("/{pollid:[0-9]+}", app.getPollHandler).Methods("GET")
 
 	// handler for getPollPrivateDetails
 	poll.HandleFunc("/{pollid:[0-9]+}/private", app.getPollPrivateDetailsHandler).Methods("GET")
 
-	// handler for updatePollStatus
-	poll.HandleFunc("/{pollid:[0-9]+}/status", app.updatePollStatusHandler).Methods("POST")
-
 	/*********************************/
-	/*	subrouter for "voter" prefix */
+	/*	subrouter for "vote" prefix  */
 	/*********************************/
-	voter := api.PathPrefix("/voter").Subrouter()
-
-	// handler for getVotesByVoter
-	voter.HandleFunc("/{voterid:[0-9]+}/all", app.queryVotesByVoterHandler).Methods("GET")
-
-	/*********************/
-	/*  create requests  */
-	/*********************/
+	vote := api.PathPrefix("/vote").Subrouter()
 
 	// handler for initVote
-	api.HandleFunc("/create/vote", app.initVoteHandler).
-		Methods("POST").
-		Queries(
-			"pollid", "{pollid}",
-			"voterid", "{voterid}",
-			"sex", "{sex}", 
-			"age", "{age}")
+	vote.HandleFunc("/create", app.initVoteHandler).Methods("POST")
 
-	// handler for initPoll
-	api.HandleFunc("/create/poll", app.initPollHandler).
-		Methods("POST").
-		Queries("pollid", "{pollid}")
+	// handler for getVotePrivateDetails
+	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/private", app.getVotePrivateDetailsHandler).Methods("GET")
+
+	// handler for getVotePrivateDetailsHash
+	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/hash", app.getVotePrivateDetailsHashHandler).Methods("GET")
+
+	// handler for getVote
+	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}", app.getVoteHandler).Methods("GET")
+
+	// handler for queryVotePrivateDetailsByPoll
+	vote.HandleFunc("", app.queryVotePrivateDetailsByPollHandler).
+		Methods("GET").
+		Queries("type", "private", "pollid", "{pollid}")
+
+	// handler for queryVotesByPoll
+	vote.HandleFunc("", app.queryVotesByPollHandler).
+		Methods("GET").
+		Queries("type", "public", "pollid", "{pollid}")
+
+	// handler for getVotesByVoter
+	vote.HandleFunc("", app.queryVotesByVoterHandler).
+		Methods("GET").
+		Queries("voter", "{voterid}")
 
 	srv := &http.Server{
 		Handler: 	r,
