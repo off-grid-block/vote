@@ -9,7 +9,7 @@ import (
 // push poll data to IPFS and IPFS CID to ledger
 func (app *Application) initPollHandler(w http.ResponseWriter, r *http.Request) {
 
-	var p InitPollRequestBody
+	var p initPollRequestBodyAPI
 
 	// Decode HTTP request body and marshal into Vote struct.
 	// If the bytes in the request body do not match the fields

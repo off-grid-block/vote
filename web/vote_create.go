@@ -8,7 +8,7 @@ import (
 // Initialize & push votes on the Fabric network
 func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) {
 
-	var v InitVoteRequestBody
+	var v initVoteRequestBodyAPI
 
 	// Decode HTTP request body and marshal into Vote struct.
 	// If the bytes in the request body do not match the fields
@@ -20,7 +20,7 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Push vote data to IPFS
-	cid, err := app.IpfsAdd(v)
+	cid, err := app.IpfsAdd(v.Content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -35,7 +35,7 @@ func (app *Application) getPollPrivateDetailsHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	var fabResp PollPrivateDetailsResponseSDK
+	var fabResp pollPrivateDetailsResponseSDK
 
 	err = json.Unmarshal([]byte(resp), &fabResp)
 	if err != nil {

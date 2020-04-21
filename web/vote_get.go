@@ -23,24 +23,24 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	// If a salt is provided, marshal Fabric resp into VoteFabricResponse so we can
 	// add the associated private data hash to the http response
-	var fabResp VoteResponseSDK
+	var fabResp voteResponseSDK
 	err = json.Unmarshal([]byte(resp), &fabResp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// retrieve private data hash from Fabric ledger
-	votePrivateDetailsHash, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	// // retrieve private data hash from Fabric ledger
+	// votePrivateDetailsHash, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 	return
+	// }
 
-	// *** TODO ***: decode unicode votePrivateDetailsHash to string
+	// // *** TODO ***: decode unicode votePrivateDetailsHash to string
 
-	// Add private data hash to response
-	fabResp.PrivateHash = votePrivateDetailsHash
+	// // Add private data hash to response
+	// fabResp.PrivateHash = votePrivateDetailsHash
 
 	httpResp, err := json.Marshal(fabResp)
 	if err != nil {
@@ -64,7 +64,7 @@ func (app *Application) getVotePrivateDetailsHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	var fabResp VotePrivateDetailsResponseSDK
+	var fabResp votePrivateDetailsResponseSDK
 
 	err = json.Unmarshal([]byte(resp), &fabResp)
 	if err != nil {

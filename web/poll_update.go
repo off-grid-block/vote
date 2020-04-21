@@ -13,7 +13,7 @@ func (app *Application) updatePollStatusHandler(w http.ResponseWriter, r *http.R
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
 
-	var body UpdatePollStatusRequestBody
+	var body updatePollStatusRequestBodyAPI
 
 	// Decode HTTP request body and marshal into Vote struct.
 	// If the bytes in the request body do not match the fields
