@@ -18,51 +18,67 @@ type Application struct {
 } 
 
 // PRELIMINARY DEF: struct to hold vote data.
-type InitVoteRequestBody struct {
+type initVoteRequestBodyAPI struct {
+	PollID 			string 		`json:"pollID"`
+	VoterID 		string 		`json:"voterID"`
+	Sex 			string 		`json:"sex"`
+	Age 			string 		`json:"age"`
+	Content 		interface{} `json:"content"`
+}
+
+type initPollRequestBodyAPI struct {
+	PollID 			string 		`json:"pollID"`
+	Content 		interface{} `json:"content"`
+}
+
+type updatePollStatusRequestBodyAPI struct {
+	Status 			string 		`json:"status"`
+}
+
+type voteDetailsHttpResponse struct {
+	PollID 			string 		`json:"pollID"`
+	VoterID 		string 		`json:"voterID"`
+	VoterSex 		string 		`json:"voterSex"`
+	VoterAge 		int 		`json:"voterAge"`
+	Content 		interface{} `json:"content"`
+}
+
+type pollDetailsHttpResponse struct {
 	PollID 			string
-	VoterID 		string
-	Sex 			string
-	Age 			string
-	Content 		struct {
-		YesOrNo 		bool
-	}
+	Status 			string
+	NumVotes 		int
+	Content 		interface{}
 }
 
-type InitPollRequestBody struct {
+type voteResponseSDK struct {
+	ObjectType 		string 		`json:"docType"`
+	PollID			string 		`json:"pollID"`
+	VoterID			string 		`json:"voterID"`
+	VoterSex 		string 		`json:"voterSex"`
+	VoterAge		int 		`json:"voterAge"`
+	PrivateHash 	string 		`json:"privateHash"`
+}
+
+type votePrivateDetailsResponseSDK struct {
+	ObjectType 		string 		`json:"docType"`
+	PollID			string 		`json:"pollID"`
+	VoterID			string 		`json:"voterID"`
+	Salt 			string 		`json:"salt"`
+	VoteHash 		string 		`json:"voteHash"`
+}
+
+type pollResponseSDK struct {
+	ObjectType 		string
 	PollID 			string
-	Content 		struct {
-		FirstChoice 	bool
-		SecondChoice 	bool
-		ThirdChoice		bool	
-	}
+	Status  		string
+	NumVotes 		int
 }
 
-type UpdatePollStatusRequestBody struct {
-	Status 			string 	`json:"status"`
-}
-
-type VoteResponseSDK struct {
-	ObjectType 		string 	`json:"docType"`
-	PollID			string 	`json:"pollID"`
-	VoterID			string 	`json:"voterID"`
-	VoterSex 		string 	`json:"voterSex"`
-	VoterAge		int 	`json:"voterAge"`
-	PrivateHash 	string 	`json:"privateHash"`
-}
-
-type VotePrivateDetailsResponseSDK struct {
-	ObjectType 		string 	`json:"docType"`
-	PollID			string 	`json:"pollID"`
-	VoterID			string 	`json:"voterID"`
-	Salt 			string 	`json:"salt"`
-	VoteHash 		string 	`json:"voteHash"`
-}
-
-type PollPrivateDetailsResponseSDK struct {
-	ObjectType 		string 	`json:"docType"`
-	PollID			string 	`json:"pollID"`
-	Salt 			string 	`json:"salt"`
-	PollHash 		string 	`json:"pollHash"`
+type pollPrivateDetailsResponseSDK struct {
+	ObjectType 		string 		`json:"docType"`
+	PollID			string 		`json:"pollID"`
+	Salt 			string 		`json:"salt"`
+	PollHash 		string 		`json:"pollHash"`
 }
 
 // Homepage
@@ -84,7 +100,7 @@ func Serve(app *Application) {
 	poll := api.PathPrefix("/poll").Subrouter()
 
 	// handler for initPoll
-	poll.HandleFunc("/create", app.initPollHandler).Methods("POST")
+	poll.HandleFunc("", app.initPollHandler).Methods("POST")
 
 	// handler for updatePollStatus
 	poll.HandleFunc("/{pollid:[0-9]+}/status", app.updatePollStatusHandler).Methods("PUT")
@@ -101,7 +117,7 @@ func Serve(app *Application) {
 	vote := api.PathPrefix("/vote").Subrouter()
 
 	// handler for initVote
-	vote.HandleFunc("/create", app.initVoteHandler).Methods("POST")
+	vote.HandleFunc("", app.initVoteHandler).Methods("POST")
 
 	// handler for getVotePrivateDetails
 	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/private", app.getVotePrivateDetailsHandler).Methods("GET")
@@ -125,7 +141,7 @@ func Serve(app *Application) {
 	// handler for getVotesByVoter
 	vote.HandleFunc("", app.queryVotesByVoterHandler).
 		Methods("GET").
-		Queries("voter", "{voterid}")
+		Queries("voterid", "{voterid}")
 
 	srv := &http.Server{
 		Handler: 	r,
