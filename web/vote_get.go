@@ -3,6 +3,8 @@ package web
 import (
 	"net/http"
 	"encoding/json"
+
+	"fmt"
 	
 	"github.com/gorilla/mux"
 )
@@ -30,19 +32,37 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// // retrieve private data hash from Fabric ledger
-	// votePrivateDetailsHash, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
+	var voteContentResp interface{}
 
-	// // *** TODO ***: decode unicode votePrivateDetailsHash to string
+	resp, err = app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		fmt.Println("You do not have permission to see these vote details")
+	} else {
+		var fabPrivateResp votePrivateDetailsResponseSDK
 
-	// // Add private data hash to response
-	// fabResp.PrivateHash = votePrivateDetailsHash
+		err = json.Unmarshal([]byte(resp), &fabPrivateResp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-	httpResp, err := json.Marshal(fabResp)
+		voteContentResp, err = app.IpfsGet(fabPrivateResp.VoteHash)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	var vote voteDetailsHttpResponse
+
+	vote.PollID = fabResp.PollID
+	vote.VoterID = fabResp.VoterID
+	vote.VoterSex = fabResp.VoterSex
+	vote.VoterAge = fabResp.VoterAge
+	vote.Content = voteContentResp
+
+	httpResp, err := json.Marshal(vote)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

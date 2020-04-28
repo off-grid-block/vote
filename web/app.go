@@ -35,6 +35,21 @@ type updatePollStatusRequestBodyAPI struct {
 	Status 			string 		`json:"status"`
 }
 
+type voteDetailsHttpResponse struct {
+	PollID 			string 		`json:"pollID"`
+	VoterID 		string 		`json:"voterID"`
+	VoterSex 		string 		`json:"voterSex"`
+	VoterAge 		int 		`json:"voterAge"`
+	Content 		interface{} `json:"content"`
+}
+
+type pollDetailsHttpResponse struct {
+	PollID 			string
+	Status 			string
+	NumVotes 		int
+	Content 		interface{}
+}
+
 type voteResponseSDK struct {
 	ObjectType 		string 		`json:"docType"`
 	PollID			string 		`json:"pollID"`
@@ -50,6 +65,13 @@ type votePrivateDetailsResponseSDK struct {
 	VoterID			string 		`json:"voterID"`
 	Salt 			string 		`json:"salt"`
 	VoteHash 		string 		`json:"voteHash"`
+}
+
+type pollResponseSDK struct {
+	ObjectType 		string
+	PollID 			string
+	Status  		string
+	NumVotes 		int
 }
 
 type pollPrivateDetailsResponseSDK struct {
