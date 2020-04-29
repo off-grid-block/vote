@@ -94,6 +94,11 @@ func Serve(app *Application) {
 	// test api homepage
 	api.HandleFunc("/", HomeHandler)
 
+	/********************************/
+	/* identity management endpoint */
+	/********************************/
+	api.HandleFunc("/application", app.userHandler).Methods("POST")
+
 	/*********************************/
 	/*	subrouter for "poll" prefix  */
 	/*********************************/
