@@ -87,6 +87,8 @@ func (vc *VoteChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response 
 		return vc.queryVotesByVoter(stub, args)			
 	case "queryVotes":										// ad hoc rich query
 		return vc.queryVotes(stub, args)
+	case "queryAllPolls":
+		return vc.queryAllPolls(stub, args)
 	case "initPoll":
 		return vc.initPoll(stub, args)
 	case "getPoll":
@@ -147,6 +149,27 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
 
 	resultsIterator, err := stub.GetPrivateDataQueryResult("collectionVote", queryString)
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	buffer, err := constructQueryResponseFromIterator(resultsIterator)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("- getQueryResultForQueryString queryResult:\n%s\n", buffer.String())
+
+	return buffer.Bytes(), nil
+}
+
+
+func getQueryResultForQueryStringPoll(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
+
+	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
+
+	resultsIterator, err := stub.GetPrivateDataQueryResult("collectionPoll", queryString)
 	if err != nil {
 		return nil, err
 	}

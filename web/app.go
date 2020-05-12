@@ -107,14 +107,17 @@ func Serve(app *Application) {
 	// handler for initPoll
 	poll.HandleFunc("", app.initPollHandler).Methods("POST")
 
+	// handler for queryAllPolls
+	poll.HandleFunc("", app.queryAllPollsHandler).Methods("GET")
+
 	// handler for updatePollStatus
-	poll.HandleFunc("/{pollid:[0-9]+}/status", app.updatePollStatusHandler).Methods("PUT")
+	poll.HandleFunc("/{pollid}/status", app.updatePollStatusHandler).Methods("PUT")
 
 	// handler for getPoll
-	poll.HandleFunc("/{pollid:[0-9]+}", app.getPollHandler).Methods("GET")
+	poll.HandleFunc("/{pollid}", app.getPollHandler).Methods("GET")
 
 	// handler for getPollPrivateDetails
-	poll.HandleFunc("/{pollid:[0-9]+}/private", app.getPollPrivateDetailsHandler).Methods("GET")
+	poll.HandleFunc("/{pollid}/private", app.getPollPrivateDetailsHandler).Methods("GET")
 
 	/*********************************/
 	/*	subrouter for "vote" prefix  */
@@ -125,13 +128,13 @@ func Serve(app *Application) {
 	vote.HandleFunc("", app.initVoteHandler).Methods("POST")
 
 	// handler for getVotePrivateDetails
-	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/private", app.getVotePrivateDetailsHandler).Methods("GET")
+	vote.HandleFunc("/{pollid}/{voterid}/private", app.getVotePrivateDetailsHandler).Methods("GET")
 
 	// handler for getVotePrivateDetailsHash
-	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}/hash", app.getVotePrivateDetailsHashHandler).Methods("GET")
+	vote.HandleFunc("/{pollid}/{voterid}/hash", app.getVotePrivateDetailsHashHandler).Methods("GET")
 
 	// handler for getVote
-	vote.HandleFunc("/{pollid:[0-9]+}/{voterid:[0-9]+}", app.getVoteHandler).Methods("GET")
+	vote.HandleFunc("/{pollid}/{voterid}", app.getVoteHandler).Methods("GET")
 
 	// handler for queryVotePrivateDetailsByPoll
 	vote.HandleFunc("", app.queryVotePrivateDetailsByPollHandler).

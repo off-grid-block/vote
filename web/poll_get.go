@@ -102,3 +102,14 @@ func (app *Application) getPollPrivateDetailsHandler(w http.ResponseWriter, r *h
 
 	w.Write([]byte(pollContentResp))
 }
+
+func (app *Application) queryAllPollsHandler(w http.ResponseWriter, r *http.Request) {
+
+	resp, err := app.FabricSDK.QueryAllPollsSDK()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(resp))
+}

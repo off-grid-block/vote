@@ -28,3 +28,18 @@ func (s *SetupSDK) GetPollPrivateDetailsSDK(pollID string) (string, error) {
 
     return string(response.Payload), nil
 }
+
+// retrieve all poll objects in state database
+func (s *SetupSDK) QueryAllPollsSDK() (string, error) {
+
+    response, err := s.client.Query(
+        channel.Request{
+            ChaincodeID: s.ChainCodeID, 
+            Fcn: "queryAllPolls", 
+            Args: [][]byte{}})
+    if err != nil {
+        return "", fmt.Errorf("failed to query: %v", err)
+    }
+
+    return string(response.Payload), nil
+}

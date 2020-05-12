@@ -101,6 +101,24 @@ func (vc *VoteChaincode) queryVotesByVoter(stub shim.ChaincodeStubInterface, arg
 	return shim.Success(queryResults)
 }
 
+// =========================================================================================
+// queryVotesByVoter takes the voter ID as a parameter, builds a query string using
+// the passed voter ID, executes the query, and returns the result set.
+// =========================================================================================	
+func (vc *VoteChaincode) queryAllPolls(stub shim.ChaincodeStubInterface, args []string) peer.Response {
+	// if len(args) != 0 {
+	// 	return shim.Error("Expecting no arguments.")
+	// }
+
+	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"poll\"}}")
+	queryResults, err := getQueryResultForQueryStringPoll(stub, queryString)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	return shim.Success(queryResults)
+}
+
 // ===== Ad hoc rich queries ===============================================================
 
 // =========================================================================================
