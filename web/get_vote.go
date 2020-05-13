@@ -36,7 +36,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err = app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		// http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Println("You do not have permission to see these vote details")
 	} else {
 		var fabPrivateResp votePrivateDetailsResponseSDK

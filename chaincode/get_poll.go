@@ -17,8 +17,8 @@ func (vc *VoteChaincode) getPoll(stub shim.ChaincodeStubInterface, args []string
 
 	pollID := args[0]
 
-	// ==== retrieve the vote ====
-	pollAsBytes, err := stub.GetPrivateData("collectionPoll", pollID)
+	// ==== retrieve public poll information from the ledger ====
+	pollAsBytes, err := stub.GetState(pollID)
 	if err != nil {
 		return shim.Error("{\"Error\":\"Failed to get state for " + pollID + "\"}")
 	} else if pollAsBytes == nil {

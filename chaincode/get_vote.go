@@ -21,7 +21,7 @@ func (vc *VoteChaincode) getVote(stub shim.ChaincodeStubInterface, args []string
 	}
 
 	// ==== retrieve the vote ====
-	voteAsBytes, err := stub.GetPrivateData("collectionVote", voteKey)
+	voteAsBytes, err := stub.GetState(voteKey)
 	if err != nil {
 		return shim.Error("{\"Error\":\"Failed to get state for " + voteKey + "\"}")
 	} else if voteAsBytes == nil {

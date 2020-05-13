@@ -1,4 +1,4 @@
-module github.com/off-grid-block/vote/sdk
+module github.com/off-grid-block/vote
 
 go 1.13
 

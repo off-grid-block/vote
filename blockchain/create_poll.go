@@ -9,14 +9,15 @@ import (
 
 
 // add entry of poll using SDK
-func (s *SetupSDK) InitPollSDK(PollID string, PollHash string) (string, error) {
+func (s *SetupSDK) InitPollSDK(PollID, Title, PollHash string) (string, error) {
 
     // Generate a random salt to concatenate with the poll's IPFS CID
     Salt := GenerateRandomSalt()
 
     text := fmt.Sprintf(
-        "{\"PollID\":\"%s\",\"Salt\":\"%s\",\"PollHash\":\"%s\"}",
+        "{\"PollID\":\"%s\",\"Title\":\"%s\",\"Salt\":\"%s\",\"PollHash\":\"%s\"}",
         PollID,
+        Title,
         Salt,
         PollHash,
     )

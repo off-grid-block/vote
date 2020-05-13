@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/off-grid-block/vote/sdk/blockchain"
+	"github.com/off-grid-block/vote/blockchain"
 	"net/http"
 	"log"
 	"fmt"
@@ -28,6 +28,7 @@ type initVoteRequestBodyAPI struct {
 
 type initPollRequestBodyAPI struct {
 	PollID 			string 		`json:"pollID"`
+	Title 			string 		`json:"title"`
 	Content 		interface{} `json:"content"`
 }
 
@@ -45,6 +46,7 @@ type voteDetailsHttpResponse struct {
 
 type pollDetailsHttpResponse struct {
 	PollID 			string
+	Title 			string
 	Status 			string
 	NumVotes 		int
 	Content 		interface{}
@@ -70,6 +72,7 @@ type votePrivateDetailsResponseSDK struct {
 type pollResponseSDK struct {
 	ObjectType 		string
 	PollID 			string
+	Title 			string
 	Status  		string
 	NumVotes 		int
 }

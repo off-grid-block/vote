@@ -16,6 +16,7 @@ import (
 func (vc *VoteChaincode) initPoll(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
 	type pollTransientInput struct {
+		Title 			string 	`json:"title"`
 		PollID			string 	`json:"pollID"`
 		Salt 			string 	`json:"salt"`
 		PollHash 		string 	`json:"pollHash"`
@@ -41,35 +42,43 @@ func (vc *VoteChaincode) initPoll(stub shim.ChaincodeStubInterface, args []strin
 		return shim.Error("poll value in transient map cannot be empty JSON string")
 	}
 
-	var pollInput pollTransientInput
-	err = json.Unmarshal(pollJsonBytes, &pollInput)
+	var transInput pollTransientInput
+	err = json.Unmarshal(pollJsonBytes, &transInput)
 	if err != nil {
 		return shim.Error("failed to decode JSON of: " + string(pollJsonBytes))
 	}
 
-	if len(pollInput.PollID) == 0 {
+	// Transient input validation
+
+	if len(transInput.PollID) == 0 {
 		return shim.Error("poll ID field must be a non-empty string")
 	}
 
-	if len(pollInput.Salt) == 0 {
+	if len(transInput.Title) == 0 {
+		return shim.Error("title field must be a non-empty string")
+	}
+
+	if len(transInput.Salt) == 0 {
 		return shim.Error("salt field must be a non-empty string")
 	} 
 
-	if len(pollInput.PollHash) == 0 {
+	if len(transInput.PollHash) == 0 {
 		return shim.Error("poll hash field must be a non-empty string")
 	}
 
-	existingPollAsBytes, err := stub.GetPrivateData("collectionPoll", pollInput.PollID)
+	// Put public poll information on chain
+	
+	existingPollAsBytes, err := stub.GetState(transInput.PollID)
 	if err != nil {
-		return shim.Error("Failed to get vote: " + err.Error())
+		return shim.Error("Failed to get poll: " + err.Error())
 	} else if existingPollAsBytes != nil {
-		fmt.Println("This poll already exists: " + pollInput.PollID)
-		return shim.Error("This poll already exists: " + pollInput.PollID)
+		return shim.Error("This poll already exists: " + transInput.PollID)
 	}
 
 	poll := &poll{
 		ObjectType: "poll",
-		PollID: pollInput.PollID,
+		PollID: transInput.PollID,
+		Title: transInput.Title,
 		Status: "ongoing",
 		NumVotes: 0,
 	}
@@ -79,22 +88,22 @@ func (vc *VoteChaincode) initPoll(stub shim.ChaincodeStubInterface, args []strin
 		return shim.Error(err.Error())
 	}
 
-	err = stub.PutPrivateData("collectionPoll", pollInput.PollID, pollJSONasBytes)
+	err = stub.PutState(transInput.PollID, pollJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	// create a composite key for poll private details collections using the poll ID and salt
-	pollPrivateDetailsCompositeKey, err := stub.CreateCompositeKey("poll", []string{pollInput.PollID, pollInput.Salt})
+	pollPrivateDetailsCompositeKey, err := stub.CreateCompositeKey("poll", []string{transInput.PollID, transInput.Salt})
 	if err != nil {
 		return shim.Error("Failed to create composite key for poll private details: " + err.Error())
 	}
 
 	pollPrivateDetails := &pollPrivateDetails {
 		ObjectType: "pollPrivateDetails",
-		PollID: pollInput.PollID,
-		Salt: pollInput.Salt,
-		PollHash: pollInput.PollHash,
+		PollID: transInput.PollID,
+		Salt: transInput.Salt,
+		PollHash: transInput.PollHash,
 	}
 
 	pollPrivateDetailsBytes, err := json.Marshal(pollPrivateDetails)

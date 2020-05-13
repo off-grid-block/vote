@@ -30,14 +30,14 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var pollContentResp interface{}
+	var content interface{}
 
 	private, err := app.FabricSDK.GetPollPrivateDetailsSDK(pollID)
 	// if there is an error, that means the peer does not have access to
 	// the private details. So only proceed with the retrieval of private
 	// data from IPFS if GetPollPrivateDetailsSDK succeeds.
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		// http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Println("You do not have permission")
 	} else {
 		var fabPrivateResp pollPrivateDetailsResponseSDK
@@ -50,7 +50,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Retrieve poll content from IPFS
-		pollContentResp, err = app.IpfsGet(fabPrivateResp.PollHash)
+		content, err = app.IpfsGet(fabPrivateResp.PollHash)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -61,15 +61,17 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 	var pollResp pollDetailsHttpResponse
 
 	pollResp.PollID = fabPublicResp.PollID
+	pollResp.Title = fabPublicResp.Title
 	pollResp.Status = fabPublicResp.Status
 	pollResp.NumVotes = fabPublicResp.NumVotes
-	pollResp.Content = pollContentResp
+	pollResp.Content = content
 
 	resp, err := json.Marshal(pollResp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	
 	w.Write([]byte(resp))
 }
 

@@ -77,7 +77,7 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 
 	var p poll
 
-	existingPollAsBytes, err := stub.GetPrivateData("collectionPoll", voteInput.PollID)
+	existingPollAsBytes, err := stub.GetState(voteInput.PollID)
 	if err != nil {
 		return shim.Error("Failed to get associated poll: " + err.Error())
 	} else if existingPollAsBytes == nil {
@@ -95,7 +95,7 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	if err != nil {
 		return shim.Error(err.Error())
 	}
-	err = stub.PutPrivateData("collectionPoll", voteInput.PollID, pollJSONasBytes)
+	err = stub.PutState(voteInput.PollID, pollJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -108,11 +108,10 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	}
 
 	// check if value for voteCompositeKey already exists
-	existingVoteAsBytes, err := stub.GetPrivateData("collectionVote", voteCompositeKey)
+	existingVoteAsBytes, err := stub.GetState(voteCompositeKey)
 	if err != nil {
 		return shim.Error("Failed to get vote: " + err.Error())
 	} else if existingVoteAsBytes != nil {
-		fmt.Println("This vote already exists: " + voteInput.PollID + voteInput.VoterID)
 		return shim.Error("This vote already exists: " + voteInput.PollID + voteInput.VoterID)
 	}
 
@@ -129,7 +128,7 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	}
 
 	// put state for voteCompositeKey
-	err = stub.PutPrivateData("collectionVote", voteCompositeKey, voteJSONasBytes)
+	err = stub.PutState(voteCompositeKey, voteJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}

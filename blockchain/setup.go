@@ -152,67 +152,47 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 	// Set up chaincode policy
 	ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
 
-	// Create collection config 1 for collectionVote
-	var collCfg1RequiredPeerCount, collCfg1MaximumPeerCount int32
-	var collCfg1BlockToLive uint64
+	// Create collection config for collectionVotePrivateDetails
+	var collCfgPrivVoteRequiredPeerCount, collCfgPrivVoteMaximumPeerCount int32
+	var collCfgPrivVoteBlockToLive uint64 
 
-	collCfg1Name              := "collectionVote"
-	collCfg1BlockToLive       = 1000000
-	collCfg1RequiredPeerCount = 0
-	collCfg1MaximumPeerCount  = 3
-	collCfg1Policy            := "OR('Org1MSP.member','Org2MSP.member')"
+	collCfgPrivVoteName              := "collectionVotePrivateDetails"
+	collCfgPrivVoteBlockToLive       = 3
+	collCfgPrivVoteRequiredPeerCount = 0
+	collCfgPrivVoteMaximumPeerCount  = 3
+	collCfgPrivVotePolicy            := "OR('Org1MSP.member')"
 
-	collCfg1, err := newCollectionConfig(collCfg1Name,collCfg1Policy, collCfg1RequiredPeerCount, collCfg1MaximumPeerCount, collCfg1BlockToLive)
+	collCfgPrivVote, err := newCollectionConfig(
+		collCfgPrivVoteName,
+		collCfgPrivVotePolicy,
+		collCfgPrivVoteRequiredPeerCount,
+		collCfgPrivVoteMaximumPeerCount,
+		collCfgPrivVoteBlockToLive)
 	if err != nil {
-	    return errors.WithMessage(err, "failed to create collection config 1")
+	    return errors.WithMessage(err, "failed to create collection config")
 	}
 
-	// Create collection config 2 for collectionVotePrivateDetails
-	var collCfg2RequiredPeerCount, collCfg2MaximumPeerCount int32
-	var collCfg2BlockToLive uint64 
+	// Create collection config for collectionPollPrivateDetails
+	var collCfgPrivPollRequiredPeerCount, collCfgPrivPollMaximumPeerCount int32
+	var collCfgPrivPollBlockToLive uint64 
 
-	collCfg2Name              := "collectionVotePrivateDetails"
-	collCfg2BlockToLive       = 3
-	collCfg2RequiredPeerCount = 0
-	collCfg2MaximumPeerCount  = 3
-	collCfg2Policy            := "OR('Org1MSP.member','Org2MSP.member')"
+	collCfgPrivPollName              := "collectionPollPrivateDetails"
+	collCfgPrivPollBlockToLive       = 3
+	collCfgPrivPollRequiredPeerCount = 0
+	collCfgPrivPollMaximumPeerCount  = 3
+	collCfgPrivPollPolicy            := "OR('Org1MSP.member')"
 
-	collCfg2, err := newCollectionConfig(collCfg2Name,collCfg2Policy, collCfg2RequiredPeerCount, collCfg2MaximumPeerCount, collCfg2BlockToLive)
+	collCfgPrivPoll, err := newCollectionConfig(
+		collCfgPrivPollName,
+		collCfgPrivPollPolicy,
+		collCfgPrivPollRequiredPeerCount,
+		collCfgPrivPollMaximumPeerCount,
+		collCfgPrivPollBlockToLive)
 	if err != nil {
-	    return errors.WithMessage(err, "failed to create collection config 2")
+	    return errors.WithMessage(err, "failed to create collection config")
 	}
 
-	// Create collection config 3 for collectionPoll
-	var collCfg3RequiredPeerCount, collCfg3MaximumPeerCount int32
-	var collCfg3BlockToLive uint64 
-
-	collCfg3Name              := "collectionPoll"
-	collCfg3BlockToLive       = 3
-	collCfg3RequiredPeerCount = 0
-	collCfg3MaximumPeerCount  = 3
-	collCfg3Policy            := "OR('Org1MSP.member','Org2MSP.member')"
-
-	collCfg3, err := newCollectionConfig(collCfg3Name,collCfg3Policy, collCfg3RequiredPeerCount, collCfg3MaximumPeerCount, collCfg3BlockToLive)
-	if err != nil {
-	    return errors.WithMessage(err, "failed to create collection config 3")
-	}
-
-	// Create collection config 4 for collectionPollPrivateDetails
-	var collCfg4RequiredPeerCount, collCfg4MaximumPeerCount int32
-	var collCfg4BlockToLive uint64 
-
-	collCfg4Name              := "collectionPollPrivateDetails"
-	collCfg4BlockToLive       = 3
-	collCfg4RequiredPeerCount = 0
-	collCfg4MaximumPeerCount  = 3
-	collCfg4Policy            := "OR('Org1MSP.member','Org2MSP.member')"
-
-	collCfg4, err := newCollectionConfig(collCfg4Name,collCfg4Policy, collCfg4RequiredPeerCount, collCfg4MaximumPeerCount, collCfg4BlockToLive)
-	if err != nil {
-	    return errors.WithMessage(err, "failed to create collection config 4")
-	}
-
-	cfg := []*cb.CollectionConfig{collCfg1, collCfg2, collCfg3, collCfg4}
+	cfg := []*cb.CollectionConfig{collCfgPrivVote, collCfgPrivPoll}
 
 	// instantiate chaincode with cc policy and collection configs
 	resp, err := s.mgmt.InstantiateCC(

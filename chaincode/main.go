@@ -30,6 +30,7 @@ type votePrivateDetails struct {
 type poll struct {
 	ObjectType 	string 	`json:"docType"`
 	PollID		string 	`json:"pollID"`
+	Title 		string 	`json:"title"`
 	Status		string 	`json:"status"`
 	NumVotes	int 	`json:"numVotes"`
 }
@@ -148,28 +149,7 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
 
-	resultsIterator, err := stub.GetPrivateDataQueryResult("collectionVote", queryString)
-	if err != nil {
-		return nil, err
-	}
-	defer resultsIterator.Close()
-
-	buffer, err := constructQueryResponseFromIterator(resultsIterator)
-	if err != nil {
-		return nil, err
-	}
-
-	fmt.Printf("- getQueryResultForQueryString queryResult:\n%s\n", buffer.String())
-
-	return buffer.Bytes(), nil
-}
-
-
-func getQueryResultForQueryStringPoll(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
-
-	fmt.Printf("- getQueryResultForQueryString queryString:\n%s\n", queryString)
-
-	resultsIterator, err := stub.GetPrivateDataQueryResult("collectionPoll", queryString)
+	resultsIterator, err := stub.GetQueryResult(queryString)
 	if err != nil {
 		return nil, err
 	}

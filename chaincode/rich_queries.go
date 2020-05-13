@@ -102,8 +102,7 @@ func (vc *VoteChaincode) queryVotesByVoter(stub shim.ChaincodeStubInterface, arg
 }
 
 // =========================================================================================
-// queryVotesByVoter takes the voter ID as a parameter, builds a query string using
-// the passed voter ID, executes the query, and returns the result set.
+// Query public poll information from the ledger
 // =========================================================================================	
 func (vc *VoteChaincode) queryAllPolls(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 	// if len(args) != 0 {
@@ -111,7 +110,7 @@ func (vc *VoteChaincode) queryAllPolls(stub shim.ChaincodeStubInterface, args []
 	// }
 
 	queryString := fmt.Sprintf("{\"selector\":{\"docType\":\"poll\"}}")
-	queryResults, err := getQueryResultForQueryStringPoll(stub, queryString)
+	queryResults, err := getQueryResultForQueryString(stub, queryString)
 	if err != nil {
 		return shim.Error(err.Error())
 	}

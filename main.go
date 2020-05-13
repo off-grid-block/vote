@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/off-grid-block/vote/sdk/blockchain"
-	"github.com/off-grid-block/vote/sdk/web"
+	"github.com/off-grid-block/vote/blockchain"
+	"github.com/off-grid-block/vote/web"
 	// "os"
 	// "bufio"
 	// "strings"
@@ -19,7 +19,7 @@ func main() {
 		ChannelConfig:		"/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
 		ChainCodeID:		"vote",
 		ChaincodeGoPath:	"/Users/brianli/deon",
-		ChaincodePath:		"vote/cc",
+		ChaincodePath:		"vote/chaincode",
 		OrgAdmin:			"Admin",
 		OrgName:			"org1",
 		ConfigFile:			"config.yaml",
