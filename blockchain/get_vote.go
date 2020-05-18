@@ -4,6 +4,7 @@ import (
     "fmt"
     "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
     // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    "reflect"
 )
 
 
@@ -60,5 +61,9 @@ func (s *SetupSDK) GetVotePrivateDetailsHashSDK(pollID, voterID string) (string,
         return "", fmt.Errorf("failed to query: %v", err)
     }
 
+    fmt.Println(reflect.TypeOf(response.Payload))
+    fmt.Println(response.Payload)
+    fmt.Println(string(response.Payload))
+    
     return string(response.Payload), nil
 }

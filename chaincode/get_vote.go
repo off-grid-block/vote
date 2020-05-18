@@ -3,6 +3,9 @@ package main
 import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+
+	// "reflect"
+	// "fmt"
 )
 
 
@@ -95,6 +98,8 @@ func (vc *VoteChaincode) getVotePrivateDetailsHash(stub shim.ChaincodeStubInterf
 	} else if voteHashAsBytes == nil {
 		return shim.Error("{\"Error\":\"Vote private data does not exist: " + privateDetailsKey + "\"}")
 	}
+
+	// fmt.Println(reflect.TypeOf(voteHashAsBytes))
 
 	return shim.Success(voteHashAsBytes)
 }

@@ -23,8 +23,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// If a salt is provided, marshal Fabric resp into VoteFabricResponse so we can
-	// add the associated private data hash to the http response
+	// Unmarshal into our defined struct
 	var fabResp voteResponseSDK
 	err = json.Unmarshal([]byte(resp), &fabResp)
 	if err != nil {
@@ -32,10 +31,11 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Retrieve contents of vote
 	var voteContentResp interface{}
 
 	resp, err = app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
-	if err != nil {
+	if err != nil { // if no access, simply ignore request
 		// http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Println("You do not have permission to see these vote details")
 	} else {
@@ -54,6 +54,13 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Retrieve private data hash
+	hash, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
+	if err != nil { // if user doesn't have access, ignore request
+		fmt.Println("You do not have permission to see the private data hash")
+		hash = ""
+	}
+
 	var vote voteDetailsHttpResponse
 
 	vote.PollID = fabResp.PollID
@@ -61,6 +68,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 	vote.VoterSex = fabResp.VoterSex
 	vote.VoterAge = fabResp.VoterAge
 	vote.Content = voteContentResp
+	vote.PrivateHash = hash
 
 	httpResp, err := json.Marshal(vote)
 	if err != nil {
@@ -71,47 +79,32 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(httpResp))
 }
 
-// Retrieve private details of a vote from the Fabric network
-func (app *Application) getVotePrivateDetailsHandler(w http.ResponseWriter, r *http.Request) {
+// // Retrieve private details of a vote from the Fabric network
+// func (app *Application) getVotePrivateDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
-	vars := mux.Vars(r)
-	pollID := vars["pollid"]
-	voterID := vars["voterid"]
+// 	vars := mux.Vars(r)
+// 	pollID := vars["pollid"]
+// 	voterID := vars["voterid"]
 
-	resp, err := app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+// 	resp, err := app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
 
-	var fabResp votePrivateDetailsResponseSDK
+// 	var fabResp votePrivateDetailsResponseSDK
 
-	err = json.Unmarshal([]byte(resp), &fabResp)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+// 	err = json.Unmarshal([]byte(resp), &fabResp)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
 
-	voteContentResp, err := app.IpfsGet(fabResp.VoteHash)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+// 	voteContentResp, err := app.IpfsGet(fabResp.VoteHash)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+// 		return
+// 	}
 
-	w.Write([]byte(voteContentResp))
-}
-
-func (app *Application) getVotePrivateDetailsHashHandler(w http.ResponseWriter, r *http.Request) {
-
-	vars := mux.Vars(r)
-	pollID := vars["pollid"]
-	voterID := vars["voterid"]
-
-	resp, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Write([]byte(resp))
-}
+// 	w.Write([]byte(voteContentResp))
+// }

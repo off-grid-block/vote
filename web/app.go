@@ -42,6 +42,7 @@ type voteDetailsHttpResponse struct {
 	VoterSex 		string 		`json:"voterSex"`
 	VoterAge 		int 		`json:"voterAge"`
 	Content 		interface{} `json:"content"`
+	PrivateHash 	string 		`json:"privateHash"`
 }
 
 type pollDetailsHttpResponse struct {
@@ -119,8 +120,8 @@ func Serve(app *Application) {
 	// handler for getPoll
 	poll.HandleFunc("/{pollid}", app.getPollHandler).Methods("GET")
 
-	// handler for getPollPrivateDetails
-	poll.HandleFunc("/{pollid}/private", app.getPollPrivateDetailsHandler).Methods("GET")
+	// // handler for getPollPrivateDetails
+	// poll.HandleFunc("/{pollid}/private", app.getPollPrivateDetailsHandler).Methods("GET")
 
 	/*********************************/
 	/*	subrouter for "vote" prefix  */
@@ -130,11 +131,11 @@ func Serve(app *Application) {
 	// handler for initVote
 	vote.HandleFunc("", app.initVoteHandler).Methods("POST")
 
-	// handler for getVotePrivateDetails
-	vote.HandleFunc("/{pollid}/{voterid}/private", app.getVotePrivateDetailsHandler).Methods("GET")
+	// // handler for getVotePrivateDetails
+	// vote.HandleFunc("/{pollid}/{voterid}/private", app.getVotePrivateDetailsHandler).Methods("GET")
 
-	// handler for getVotePrivateDetailsHash
-	vote.HandleFunc("/{pollid}/{voterid}/hash", app.getVotePrivateDetailsHashHandler).Methods("GET")
+	// // handler for getVotePrivateDetailsHash
+	// vote.HandleFunc("/{pollid}/{voterid}/hash", app.getVotePrivateDetailsHashHandler).Methods("GET")
 
 	// handler for getVote
 	vote.HandleFunc("/{pollid}/{voterid}", app.getVoteHandler).Methods("GET")
