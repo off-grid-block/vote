@@ -9,7 +9,7 @@ import (
 
 
 // add entry using SDK
-func (s *SetupSDK) InitVoteSDK(PollID string, VoterID string, VoterSex string, VoterAge string, VoteHash string) (string, error) {
+func (s *SDKConfig) InitVoteSDK(PollID string, VoterID string, VoterSex string, VoterAge string, VoteHash string) (string, error) {
 
     // Generate a random salt to concatenate with the vote's IPFS CID
     Salt := GenerateRandomSalt()

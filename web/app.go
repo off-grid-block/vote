@@ -13,7 +13,7 @@ import (
 // Struct containing Fabric SDK setup data. Objects of type
 // Application have access to the SDK's chaincode interface.
 type Application struct {
-	FabricSDK *blockchain.SetupSDK
+	FabricSDK *blockchain.SDKConfig
 	IpfsShell *ipfs.Shell
 } 
 

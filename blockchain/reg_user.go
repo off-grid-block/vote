@@ -8,7 +8,7 @@ import (
 )
 
 // InvokeHello
-func (s *SetupSDK) RegUser(data caMsp.RegistrationRequest) (string, error) {
+func (s *SDKConfig) RegUser(data caMsp.RegistrationRequest) (string, error) {
 
 	// Prepare arguments
 	var args []string
@@ -16,7 +16,7 @@ func (s *SetupSDK) RegUser(data caMsp.RegistrationRequest) (string, error) {
 	// new User information
 
 	caClient, err := caMsp.New(s.fsdk.Context())
-	//fmt.Println("caclient", caClient)
+	fmt.Println("caclient", caClient)
 	enrollSecret, err := caClient.Register(&data)
 	fmt.Println("enrollSecret", enrollSecret)
 	if err != nil {

@@ -9,7 +9,7 @@ import (
 
 
 //read entry on chaincode using SDK
-func (s *SetupSDK) GetVoteSDK(pollID, voterID string) (string, error) {
+func (s *SDKConfig) GetVoteSDK(pollID, voterID string) (string, error) {
 
     // concatenate poll ID and voter ID to get vote key
     pollIdBytes := []byte(pollID)
@@ -26,7 +26,7 @@ func (s *SetupSDK) GetVoteSDK(pollID, voterID string) (string, error) {
 
 
 // read private details of vote using SDK
-func (s *SetupSDK) GetVotePrivateDetailsSDK(pollID, voterID string) (string, error) {
+func (s *SDKConfig) GetVotePrivateDetailsSDK(pollID, voterID string) (string, error) {
 
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)
@@ -46,7 +46,7 @@ func (s *SetupSDK) GetVotePrivateDetailsSDK(pollID, voterID string) (string, err
 }
 
 // get the private data hash of a vote
-func (s *SetupSDK) GetVotePrivateDetailsHashSDK(pollID, voterID string) (string, error) {
+func (s *SDKConfig) GetVotePrivateDetailsHashSDK(pollID, voterID string) (string, error) {
     
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)

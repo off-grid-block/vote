@@ -17,7 +17,7 @@ import (
 )
 
 // FabricSetup implementation
-type SetupSDK struct {
+type SDKConfig struct {
 	ConfigFile      string
 	OrgID           string
 	OrdererID       string
@@ -38,7 +38,7 @@ type SetupSDK struct {
 }
 
 // Initialization setups new sdk
-func (s *SetupSDK) Initialization() error {
+func (s *SDKConfig) Initialization() error {
 
 	// Add parameters for the initialization
 	if s.initialized {
@@ -60,7 +60,7 @@ func (s *SetupSDK) Initialization() error {
 
 }
 
-func (s *SetupSDK) AdminSetup() error {
+func (s *SDKConfig) AdminSetup() error {
 
 	// The resource management client is responsible for managing channels (create/update channel)
 	resourceManagerClientContext := s.fsdk.Context(fabsdk.WithUser(s.OrgAdmin), fabsdk.WithOrg(s.OrgName))
@@ -88,7 +88,7 @@ func (s *SetupSDK) AdminSetup() error {
 	return nil
 }
 
-func (s *SetupSDK) ChannelSetup() error {
+func (s *SDKConfig) ChannelSetup() error {
 
 	req := resmgmt.SaveChannelRequest{ChannelID: s.ChannelID, ChannelConfigPath: s.ChannelConfig, SigningIdentities: []msp.SigningIdentity{s.MgmtIdentity}}
 	//create channel
@@ -132,7 +132,7 @@ func newCollectionConfig(colName, policy string, reqPeerCount, maxPeerCount int3
 }
 
 // Installs and instantiates chaincode
-func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
+func (s *SDKConfig) ChainCodeInstallationInstantiation() error {
 
 	// Create the chaincode package that will be sent to the peers
 	ccPackage, err := packager.NewCCPackage(s.ChaincodePath, s.ChaincodeGoPath)
@@ -217,7 +217,7 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 }
 
 //setup client and setupt access to channel events
-func (s*SetupSDK)  ClientSetup() error {
+func (s*SDKConfig)  ClientSetup() error {
 	// Channel client is used to Query or Execute transactions
 	var err error
 	clientChannelContext := s.fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser(s.UserName))
@@ -237,6 +237,6 @@ func (s*SetupSDK)  ClientSetup() error {
 	return nil
 }
 
-func (s *SetupSDK) CloseSDK() {
+func (s *SDKConfig) CloseSDK() {
 	s.fsdk.Close()
 }

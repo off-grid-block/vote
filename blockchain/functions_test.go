@@ -10,7 +10,7 @@ func TestChaincodeSDK(t *testing.T) {
 
 	/* SDK Setup */
 
-	fSetup := SetupSDK {
+	fSetup := SDKConfig {
 		OrdererID: 			"orderer.example.com",
 
 		ChannelID: 			"mychannel",

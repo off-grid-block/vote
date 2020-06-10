@@ -10,7 +10,7 @@ import (
 
 
 // query the private details of a vote by poll
-func (s *SetupSDK) QueryVotePrivateDetailsByPollSDK(pollID string) ([]string, error) {
+func (s *SDKConfig) QueryVotePrivateDetailsByPollSDK(pollID string) ([]string, error) {
 
     var cidList []string
 
@@ -30,7 +30,7 @@ func (s *SetupSDK) QueryVotePrivateDetailsByPollSDK(pollID string) ([]string, er
 }
 
 // query votes of a particular poll
-func (s *SetupSDK) QueryVotesByPollSDK(pollID string) (string, error) {
+func (s *SDKConfig) QueryVotesByPollSDK(pollID string) (string, error) {
 
     response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotesByPoll", Args: [][]byte{[]byte(pollID)}})
     if err != nil {
@@ -41,7 +41,7 @@ func (s *SetupSDK) QueryVotesByPollSDK(pollID string) (string, error) {
 }
 
 // query votes of a particular poll
-func (s *SetupSDK) QueryVotesByVoterSDK(voterID string) (string, error) {
+func (s *SDKConfig) QueryVotesByVoterSDK(voterID string) (string, error) {
 
     response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotesByVoter", Args: [][]byte{[]byte(voterID)}})
     if err != nil {

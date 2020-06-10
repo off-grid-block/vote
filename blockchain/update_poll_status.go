@@ -8,7 +8,7 @@ import (
 )
 
 
-func (s *SetupSDK) UpdatePollStatusSDK(pollID, status string) (string, error) {
+func (s *SDKConfig) UpdatePollStatusSDK(pollID, status string) (string, error) {
 
     eventID := "updateEvent"
 

@@ -268,8 +268,8 @@ organizations:
     # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
     # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
     # Fabric-CA servers.
-    # certificateAuthorities:
-    #   - ca.org1.example.com
+    certificateAuthorities:
+      - ca.org1.example.com
 
   # the profile will contain public information about organizations other than the one it belongs to.
   # These are necessary information to make transaction lifecycles work, including MSP IDs and
@@ -286,8 +286,8 @@ organizations:
       - peer0.org2.example.com
       - peer1.org2.example.com
 
-    # certificateAuthorities:
-    #   - ca.org2.example.com
+    certificateAuthorities:
+      - ca.org2.example.com
 
   # Orderer Org name
   ordererorg:
@@ -419,7 +419,7 @@ peers:
 # certificateAuthorities:
 #   ca.org1.example.com:
 #     # [Optional] Default: Infer from hostname
-#     url: https://ca.org1.example.com:7054
+#     url: localhost:7054
 #     tlsCACerts:
 #       # Comma-Separated list of paths
 #       path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
@@ -440,8 +440,9 @@ peers:
 #       enrollSecret: adminpw
 #     # [Optional] The optional name of the CA.
 #     caName: ca.org1.example.com
+
 #   ca.org2.example.com:
-#     url: https://ca.org2.example.com:8054
+#     url: localhost:8054
 #     tlsCACerts:
 #       # Comma-Separated list of paths
 #       path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
@@ -463,6 +464,24 @@ peers:
 #       enrollSecret: adminpw
 #     # [Optional] The optional name of the CA.
 #     caName: ca.org2.example.com
+
+certificateAuthorities:
+  ca.org1.example.com:
+    url: 10.53.17.232:8005
+    # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
+    # needed to enroll and invoke new users.
+    httpOptions:
+      verify: false
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+    # [Optional] The optional name of the CA.
+    caName: ca.org1.example.com
+    tlsCACerts:
+      # Certificate location absolute path
+      # path: ${GOPATH}/src/github.com/gosdk-example/fixtures/crypto-config/peerOrganizations/org1.hf.sample.io/ca/ca.org1.hf.sample.io-cert.pem
+      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+
 
 # EntityMatchers enable substitution of network hostnames with static configurations
  # so that properties can be mapped. Regex can be used for this purpose
@@ -492,11 +511,11 @@ entityMatchers:
       sslTargetOverrideUrlSubstitutionExp: orderer.example.com
       mappedHost: orderer.example.com
 #
-#  certificateAuthority:
-#    - pattern: (\w+).org1.example.(\w+)
-#      urlSubstitutionExp:
-#      mappedHost: ca.org1.example.com
-#
-#    - pattern: (\w+).org2.example.(\w+)
-#      urlSubstitutionExp:
-#      mappedHost: ca.org2.example.com
+ # certificateAuthority:
+ #   - pattern: (\w+).org1.example.com:(\d+)
+ #     urlSubstitutionExp: localhost:${2}
+ #     mappedHost: ${1}.ca.org1.example.com
+
+ #   - pattern: (\w+).org2.example.(\w+)
+ #     urlSubstitutionExp:
+ #     mappedHost: ca.org2.example.com
