@@ -9,7 +9,7 @@ import (
 )
 
 
-func (app *Application) queryVotesByPollHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) QueryVotesByPollHandler(w http.ResponseWriter, r *http.Request) {
 	
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
@@ -24,7 +24,7 @@ func (app *Application) queryVotesByPollHandler(w http.ResponseWriter, r *http.R
 }
 
 
-func (app *Application) queryVotePrivateDetailsByPollHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) QueryVotePrivateDetailsByPollHandler(w http.ResponseWriter, r *http.Request) {
 	
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
@@ -59,7 +59,7 @@ func (app *Application) queryVotePrivateDetailsByPollHandler(w http.ResponseWrit
 }
 
 
-func (app *Application) queryVotesByVoterHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) QueryVotesByVoterHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	voterID := vars["voterid"]

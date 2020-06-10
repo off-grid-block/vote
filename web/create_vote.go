@@ -6,7 +6,7 @@ import (
 )
 
 // Initialize & push votes on the Fabric network
-func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) InitVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	var v initVoteRequestBodyAPI
 

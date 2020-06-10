@@ -8,7 +8,7 @@ import (
 )
 
 
-func (app *Application) updatePollStatusHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) UpdatePollStatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]

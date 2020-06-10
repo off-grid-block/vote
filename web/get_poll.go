@@ -9,7 +9,7 @@ import (
 )
 
 
-func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) GetPollHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
@@ -105,7 +105,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 // 	w.Write([]byte(pollContentResp))
 // }
 
-func (app *Application) queryAllPollsHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) QueryAllPollsHandler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := app.FabricSDK.QueryAllPollsSDK()
 	if err != nil {

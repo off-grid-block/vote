@@ -11,7 +11,7 @@ import (
 
 
 // Retrieve vote from the Fabric network
-func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) GetVoteHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]

@@ -8,7 +8,7 @@ import (
 	caMsp "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 )
 
-func (app *Application) userHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) UserHandler(w http.ResponseWriter, r *http.Request) {
 	// data := &struct {
 	// 	Name 		string
 	// 	Secret      string

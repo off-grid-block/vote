@@ -7,7 +7,7 @@ import (
 
 
 // push poll data to IPFS and IPFS CID to ledger
-func (app *Application) initPollHandler(w http.ResponseWriter, r *http.Request) {
+func (app *Application) InitPollHandler(w http.ResponseWriter, r *http.Request) {
 
 	var p initPollRequestBodyAPI
 
