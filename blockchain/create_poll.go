@@ -6,6 +6,8 @@ import (
     "github.com/hyperledger/fabric-sdk-go/pkg/client/event"
     "github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 
+    "github.com/off-grid-block/core-interface/pkg/sdk"
+
     // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
     "time"
     "github.com/pkg/errors"
@@ -14,7 +16,7 @@ import (
 
 
 // add entry of poll using SDK
-func (s *SDKConfig) InitPollSDK(PollID, Title, PollHash string) (string, error) {
+func InitPollSDK(s *sdk.SDKConfig, PollID, Title, PollHash string) (string, error) {
 
     // Generate a random salt to concatenate with the poll's IPFS CID
     Salt := GenerateRandomSalt()
@@ -34,7 +36,7 @@ func (s *SDKConfig) InitPollSDK(PollID, Title, PollHash string) (string, error) 
     transientDataMap["poll"] = []byte(text)
 
     // client context created
-    clientContext := s.fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    clientContext := s.FabricSDK.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
     client, err := channel.New(clientContext)
     if err != nil {
         return "client error", errors.WithMessage(err, "failed to create new channel client")
@@ -49,7 +51,7 @@ func (s *SDKConfig) InitPollSDK(PollID, Title, PollHash string) (string, error) 
 
 
     // register chaincode event
-    registered, notifier, err := event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+    registered, notifier, err := event.RegisterChaincodeEvent(ccID, eventID)
     if err != nil {
         return "Failed to register chaincode event", err
     }
@@ -58,8 +60,8 @@ func (s *SDKConfig) InitPollSDK(PollID, Title, PollHash string) (string, error) 
     defer event.Unregister(registered)
 
     // Create a request for vote init and send it
-    //response, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
-    response, err := client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
+    //response, err := s.client.Execute(channel.Request{ChaincodeID: ccID, Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
+    response, err := client.Execute(channel.Request{ChaincodeID: ccID, Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
     if err != nil {
         return "", fmt.Errorf("failed to initiate: %v", err)
     }

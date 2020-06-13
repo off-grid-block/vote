@@ -6,11 +6,6 @@ import (
 	"strings"
 )
 
-const (
-	// length of generated salt
-	length = 16
-)
-
 // https://yourbasic.org/golang/generate-random-string/
 func GenerateRandomSalt() string {
 

@@ -3,6 +3,7 @@ package blockchain
 
 import (
 	"testing"
+	"github.com/off-grid-block/core-interface/pkg/sdk"
 	// "fmt"
 )
 
@@ -10,7 +11,7 @@ func TestChaincodeSDK(t *testing.T) {
 
 	/* SDK Setup */
 
-	fSetup := SDKConfig {
+	fSetup := &sdk.SDKConfig {
 		OrdererID: 			"orderer.example.com",
 
 		ChannelID: 			"mychannel",
@@ -62,19 +63,19 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Initialize Example Polls & Votes for Testing */
 
 	// Example poll ID 1
-	_, err = fSetup.InitPollSDK("1", "t589t9fh98rfh23")
+	_, err = InitPollSDK(fSetup, "1", "t589t9fh98rfh23")
 	if err != nil {
 		t.Errorf("Failed to initialize poll: %v\n", err)
 	}
 
 	// Example vote with poll ID 1, voter ID 1
-	_, err = fSetup.InitVoteSDK("1", "1", "m", "21", "36afgyr545tfgfd")
+	_, err = InitVoteSDK(fSetup, "1", "1", "m", "21", "36afgyr545tfgfd")
 	if err != nil {
 		t.Errorf("Failed to initialize vote: %v\n", err)
 	}
 
 	// Example vote with poll ID 1, voter ID 2
-	_, err = fSetup.InitVoteSDK("1", "2", "f", "42", "f149j9vjf0cfqj5")
+	_, err = InitVoteSDK(fSetup, "1", "2", "f", "42", "f149j9vjf0cfqj5")
 	if err != nil {
 		t.Errorf("Failed to initialize vote: %v\n", err)
 	}
@@ -82,7 +83,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetVote test */
 
 	t.Run("GetVote", func(t *testing.T) {
-		payload, err := fSetup.GetVoteSDK("1", "1")
+		payload, err := GetVoteSDK(fSetup, "1", "1")
 		if err != nil {
 			t.Errorf("Failed to get vote: %v\n", err)
 		}
@@ -92,7 +93,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetVotePrivateDetails test */
 
 	t.Run("GetVotePrivateDetails", func(t *testing.T) {
-		payload, err := fSetup.GetVotePrivateDetailsSDK("1", "1")
+		payload, err := GetVotePrivateDetailsSDK(fSetup, "1", "1")
 		if err != nil {
 			t.Errorf("Failed to get vote private details: %v\n", err)
 		}
@@ -102,7 +103,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetVotePrivateDetailsHash test */
 
 	t.Run("GetVotePrivateDetailsHash", func(t *testing.T) {
-		payload, err := fSetup.GetVotePrivateDetailsHashSDK("1", "1")
+		payload, err := GetVotePrivateDetailsHashSDK(fSetup, "1", "1")
 		if err != nil {
 			t.Errorf("Failed to get vote private details hash: %v\n", err)
 		}
@@ -113,7 +114,7 @@ func TestChaincodeSDK(t *testing.T) {
 
 	t.Run("QueryVotePrivateDetailsByPoll", func(t *testing.T) {
 
-		queryResult, err := fSetup.QueryVotePrivateDetailsByPollSDK("1")
+		queryResult, err := QueryVotePrivateDetailsByPollSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query vote private details by poll: %v\n", err)
 		}
@@ -126,7 +127,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run QueryVotesByPoll test */
 
 	t.Run("QueryVotesByPoll", func(t *testing.T) {
-		payload, err := fSetup.QueryVotesByPollSDK("1")
+		payload, err := QueryVotesByPollSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query vote private details by poll: %v\n", err)
 		}
@@ -136,7 +137,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run QueryVotesByVoter test */
 
 	t.Run("QueryVotesByVoter", func(t *testing.T) {
-		payload, err := fSetup.QueryVotesByVoterSDK("1")
+		payload, err := QueryVotesByVoterSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query vote private details by poll: %v\n", err)
 		}
@@ -146,7 +147,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetPoll test */
 
 	t.Run("GetPoll", func(t *testing.T) {
-		payload, err := fSetup.GetPollSDK("1")
+		payload, err := GetPollSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query poll: %v\n", err)
 		}
@@ -156,7 +157,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetPollPrivateDetails test */
 
 	t.Run("GetPollPrivateDetails", func(t *testing.T) {
-		payload, err := fSetup.GetPollPrivateDetailsSDK("1")
+		payload, err := GetPollPrivateDetailsSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query poll private details: %v\n", err)
 		}
@@ -166,7 +167,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run UpdatePollStatus test */
 
 	t.Run("UpdatePollStatus", func(t *testing.T) {
-		_, err := fSetup.UpdatePollStatusSDK("1", "closed")
+		_, err := UpdatePollStatusSDK(fSetup, "1", "closed")
 		if err != nil {
 			t.Errorf("Failed to update poll status: %v\n", err)
 		}

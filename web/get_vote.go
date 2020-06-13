@@ -5,7 +5,8 @@ import (
 	"encoding/json"
 
 	"fmt"
-	
+
+	"github.com/off-grid-block/vote/blockchain"
 	"github.com/gorilla/mux"
 )
 
@@ -17,7 +18,7 @@ func (app *Application) GetVoteHandler(w http.ResponseWriter, r *http.Request) {
 	pollID := vars["pollid"]
 	voterID := vars["voterid"]
 
-	resp, err := app.FabricSDK.GetVoteSDK(pollID, voterID)
+	resp, err := blockchain.GetVoteSDK(app.FabricSDK, pollID, voterID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -34,7 +35,7 @@ func (app *Application) GetVoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve contents of vote
 	var voteContentResp interface{}
 
-	resp, err = app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
+	resp, err = blockchain.GetVotePrivateDetailsSDK(app.FabricSDK, pollID, voterID)
 	if err != nil { // if no access, simply ignore request
 		// http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Println("You do not have permission to see these vote details")
@@ -55,7 +56,7 @@ func (app *Application) GetVoteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve private data hash
-	hash, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
+	hash, err := blockchain.GetVotePrivateDetailsHashSDK(app.FabricSDK, pollID, voterID)
 	if err != nil { // if user doesn't have access, ignore request
 		fmt.Println("You do not have permission to see the private data hash")
 		hash = ""

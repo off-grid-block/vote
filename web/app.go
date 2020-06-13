@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/off-grid-block/vote/blockchain"
+	"github.com/off-grid-block/core-interface/pkg/sdk"
 	// "net/http"
 	// "log"
 	// "fmt"
@@ -13,7 +13,7 @@ import (
 // Struct containing Fabric SDK setup data. Objects of type
 // Application have access to the SDK's chaincode interface.
 type Application struct {
-	FabricSDK *blockchain.SDKConfig
+	FabricSDK *sdk.SDKConfig
 	IpfsShell *ipfs.Shell
 } 
 

@@ -1,4 +1,4 @@
-module github.com/off-grid-block/vote/cc
+module github.com/off-grid-block/vote/chaincode
 
 go 1.13
 

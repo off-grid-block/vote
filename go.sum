@@ -55,10 +55,12 @@ github.com/hyperledger/fabric v1.4.2/go.mod h1:tGFAOCT696D3rG0Vofd2dyWYLySHlh0aQ
 github.com/hyperledger/fabric-lib-go v1.0.0 h1:UL1w7c9LvHZUSkIvHTDGklxFv2kTeva1QI2emOVc324=
 github.com/hyperledger/fabric-lib-go v1.0.0/go.mod h1:H362nMlunurmHwkYqR5uHL2UDWbQdbfz74n8kbCFsqc=
 github.com/hyperledger/fabric-protos-go v0.0.0-20190821180310-6b6ac9042dfd/go.mod h1:xVYTjK4DtZRBxZ2D9aE4y6AbLaPwue2o/criQyQbVD0=
+github.com/hyperledger/fabric-protos-go v0.0.0-20191121202242-f5500d5e3e85/go.mod h1:xVYTjK4DtZRBxZ2D9aE4y6AbLaPwue2o/criQyQbVD0=
 github.com/hyperledger/fabric-protos-go v0.0.0-20200124220212-e9cfc186ba7b h1:rZ3Vro68vStzLYfcSrQlprjjCf5UmFk7QjKGgHL8IQg=
 github.com/hyperledger/fabric-protos-go v0.0.0-20200124220212-e9cfc186ba7b/go.mod h1:xVYTjK4DtZRBxZ2D9aE4y6AbLaPwue2o/criQyQbVD0=
-github.com/hyperledger/fabric-sdk-go v1.0.0-beta1 h1:id5BJE6TZu/SaGQahns6sO2o+n5fwps7GrWGCJJnAY8=
 github.com/hyperledger/fabric-sdk-go v1.0.0-beta1/go.mod h1:i8yJ9t8i1fGe7opUcq6uESxhruMJNXlc+Rx9ooBZsYg=
+github.com/hyperledger/fabric-sdk-go v1.0.0-beta2 h1:FBYygns0Qga+mQ4PXycyTU5m4N9KAZM+Ttf7agiV7M8=
+github.com/hyperledger/fabric-sdk-go v1.0.0-beta2/go.mod h1:/s224b8NLvOJOCIqBvWd9O6u7GE33iuIOT6OfcTE1OE=
 github.com/ipfs/go-cid v0.0.1/go.mod h1:GHWU/WuQdMPmIosc4Yn1bcCT7dSeX4lBafM7iqUPQvM=
 github.com/ipfs/go-ipfs-api v0.0.3 h1:1XZBfVDGj0GyyO5WItLrz2opCwezIm9LfFcBfe+sRxM=
 github.com/ipfs/go-ipfs-api v0.0.3/go.mod h1:EgBqlEzrA22SnNKq4tcP2GDPKxbfF+uRTd2YFmR1uUk=
@@ -116,6 +118,12 @@ github.com/multiformats/go-multihash v0.0.8 h1:wrYcW5yxSi3dU07n5jnuS5PrNwyHy0zRH
 github.com/multiformats/go-multihash v0.0.8/go.mod h1:YSLudS+Pi8NHE7o6tb3D8vrpKa63epEDmG8nTduyAew=
 github.com/multiformats/go-varint v0.0.1 h1:TR/0rdQtnNxuN2IhiB639xC3tWM4IUi7DkTBVTdGW/M=
 github.com/multiformats/go-varint v0.0.1/go.mod h1:3Ls8CIEsrijN6+B7PbrXRPxHRPuXSrVKRY101jdMZYE=
+github.com/off-grid-block/core-interface v0.0.0-20200613031624-df08a3e4aba3 h1:Z6T3rPoFzCKYdJa7rehUg3KIZ+RP1hqLfqtBg1TUO64=
+github.com/off-grid-block/core-interface v0.0.0-20200613031624-df08a3e4aba3/go.mod h1:8Nv+51vExArzfOu3xNFF+IPYWLrkO0nxZYIkf1sbLBA=
+github.com/off-grid-block/core-interface v0.0.0-20200613032940-5a31c1b4c533 h1:xcfh50Jl8QUEJkjbxEyx4DHZ8iyj3Dgk6X7+Ad7bNls=
+github.com/off-grid-block/core-interface v0.0.0-20200613032940-5a31c1b4c533/go.mod h1:8Nv+51vExArzfOu3xNFF+IPYWLrkO0nxZYIkf1sbLBA=
+github.com/off-grid-block/core-interface v0.0.0-20200613211825-d7d9e69730b0 h1:686OmDhnk/Zeu+Ke+/idYgptygklqWKmRutiZp7vB7c=
+github.com/off-grid-block/core-interface v0.0.0-20200613211825-d7d9e69730b0/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
 github.com/off-grid-block/off-grid-sdk v0.0.0-20191024214633-a41d78581dff/go.mod h1:49Y+H1IAyVomXeT4MW34Ekp0Amz3gIcWboKTVhH4OR4=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=

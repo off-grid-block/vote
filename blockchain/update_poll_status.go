@@ -3,24 +3,24 @@ package blockchain
 import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-	// "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    "github.com/off-grid-block/core-interface/pkg/sdk"
 	"time"
 )
 
 
-func (s *SDKConfig) UpdatePollStatusSDK(pollID, status string) (string, error) {
+func UpdatePollStatusSDK(s *sdk.SDKConfig, pollID, status string) (string, error) {
 
     eventID := "updateEvent"
 
     // register chaincode event
-    registered, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+    registered, notifier, err := s.Event.RegisterChaincodeEvent(ccID, eventID)
     if err != nil {
         return "Failed to register chaincode event", err
     }
-    defer s.event.Unregister(registered)
+    defer s.Event.Unregister(registered)
 
     // Create a request for poll update and send it
-    response, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "updatePollStatus", Args: [][]byte{[]byte(pollID), []byte(status)}})
+    response, err := s.Client.Execute(channel.Request{ChaincodeID: ccID, Fcn: "updatePollStatus", Args: [][]byte{[]byte(pollID), []byte(status)}})
     if err != nil {
         return "", fmt.Errorf("failed to update: %v", err)
     }

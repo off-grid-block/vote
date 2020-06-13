@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"encoding/json"
 	
+	"github.com/off-grid-block/vote/blockchain"
 	"github.com/gorilla/mux"
 )
 
@@ -24,7 +25,7 @@ func (app *Application) UpdatePollStatusHandler(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	resp, err := app.FabricSDK.UpdatePollStatusSDK(pollID, body.Status)
+	resp, err := blockchain.UpdatePollStatusSDK(app.FabricSDK, pollID, body.Status)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
