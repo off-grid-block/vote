@@ -8,7 +8,7 @@ require (
 	github.com/hyperledger/fabric-protos-go v0.0.0-20200124220212-e9cfc186ba7b
 	github.com/hyperledger/fabric-sdk-go v1.0.0-beta2
 	github.com/ipfs/go-ipfs-api v0.0.3
-	github.com/off-grid-block/core-interface v0.0.0-20200614145600-c841655c7430
+	github.com/off-grid-block/core-interface v0.0.0-20200614195207-2ed65a989bd0
 	github.com/off-grid-block/off-grid-sdk v0.0.0-20191024214633-a41d78581dff
 	github.com/pkg/errors v0.9.1
 )

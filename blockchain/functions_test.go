@@ -4,10 +4,13 @@ package blockchain
 import (
 	"testing"
 	"github.com/off-grid-block/core-interface/pkg/sdk"
+	"github.com/off-grid-block/vote/blockchain"
 	// "fmt"
 )
 
 func TestChaincodeSDK(t *testing.T) {
+
+	ccPath := map[string]string{"vote": "vote/chaincode"}
 
 	/* SDK Setup */
 
@@ -17,12 +20,12 @@ func TestChaincodeSDK(t *testing.T) {
 		ChannelID: 			"mychannel",
 		ChannelConfig: 		"/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
 
-		ChainCodeID: 		"vote",
+		// ChainCodeID: 		"vote",
 		ChaincodeGoPath: 	"/Users/brianli/deon",
-		ChaincodePath:   	"vote/cc",
+		ChaincodePath:   	ccPath,
 		OrgAdmin:        	"Admin",
 		OrgName:         	"org1",
-		ConfigFile:      	"/Users/brianli/deon/src/vote/config.yaml",
+		ConfigFile:      	"/Users/brianli/deon/src/vote/blockchain/config_test.yaml",
 
 		UserName: 			"User1",
 	}
@@ -63,19 +66,19 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Initialize Example Polls & Votes for Testing */
 
 	// Example poll ID 1
-	_, err = InitPollSDK(fSetup, "1", "t589t9fh98rfh23")
+	_, err = blockchain.InitPollSDK(fSetup, "1", "title", "t589t9fh98rfh23")
 	if err != nil {
 		t.Errorf("Failed to initialize poll: %v\n", err)
 	}
 
 	// Example vote with poll ID 1, voter ID 1
-	_, err = InitVoteSDK(fSetup, "1", "1", "m", "21", "36afgyr545tfgfd")
+	_, err = blockchain.InitVoteSDK(fSetup, "1", "1", "m", "21", "36afgyr545tfgfd")
 	if err != nil {
 		t.Errorf("Failed to initialize vote: %v\n", err)
 	}
 
 	// Example vote with poll ID 1, voter ID 2
-	_, err = InitVoteSDK(fSetup, "1", "2", "f", "42", "f149j9vjf0cfqj5")
+	_, err = blockchain.InitVoteSDK(fSetup, "1", "2", "f", "42", "f149j9vjf0cfqj5")
 	if err != nil {
 		t.Errorf("Failed to initialize vote: %v\n", err)
 	}
@@ -83,7 +86,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetVote test */
 
 	t.Run("GetVote", func(t *testing.T) {
-		payload, err := GetVoteSDK(fSetup, "1", "1")
+		payload, err := blockchain.GetVoteSDK(fSetup, "1", "1")
 		if err != nil {
 			t.Errorf("Failed to get vote: %v\n", err)
 		}
@@ -93,7 +96,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetVotePrivateDetails test */
 
 	t.Run("GetVotePrivateDetails", func(t *testing.T) {
-		payload, err := GetVotePrivateDetailsSDK(fSetup, "1", "1")
+		payload, err := blockchain.GetVotePrivateDetailsSDK(fSetup, "1", "1")
 		if err != nil {
 			t.Errorf("Failed to get vote private details: %v\n", err)
 		}
@@ -103,7 +106,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetVotePrivateDetailsHash test */
 
 	t.Run("GetVotePrivateDetailsHash", func(t *testing.T) {
-		payload, err := GetVotePrivateDetailsHashSDK(fSetup, "1", "1")
+		payload, err := blockchain.GetVotePrivateDetailsHashSDK(fSetup, "1", "1")
 		if err != nil {
 			t.Errorf("Failed to get vote private details hash: %v\n", err)
 		}
@@ -114,7 +117,7 @@ func TestChaincodeSDK(t *testing.T) {
 
 	t.Run("QueryVotePrivateDetailsByPoll", func(t *testing.T) {
 
-		queryResult, err := QueryVotePrivateDetailsByPollSDK(fSetup, "1")
+		queryResult, err := blockchain.QueryVotePrivateDetailsByPollSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query vote private details by poll: %v\n", err)
 		}
@@ -127,7 +130,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run QueryVotesByPoll test */
 
 	t.Run("QueryVotesByPoll", func(t *testing.T) {
-		payload, err := QueryVotesByPollSDK(fSetup, "1")
+		payload, err := blockchain.QueryVotesByPollSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query vote private details by poll: %v\n", err)
 		}
@@ -137,7 +140,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run QueryVotesByVoter test */
 
 	t.Run("QueryVotesByVoter", func(t *testing.T) {
-		payload, err := QueryVotesByVoterSDK(fSetup, "1")
+		payload, err := blockchain.QueryVotesByVoterSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query vote private details by poll: %v\n", err)
 		}
@@ -147,7 +150,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetPoll test */
 
 	t.Run("GetPoll", func(t *testing.T) {
-		payload, err := GetPollSDK(fSetup, "1")
+		payload, err := blockchain.GetPollSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query poll: %v\n", err)
 		}
@@ -157,7 +160,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run GetPollPrivateDetails test */
 
 	t.Run("GetPollPrivateDetails", func(t *testing.T) {
-		payload, err := GetPollPrivateDetailsSDK(fSetup, "1")
+		payload, err := blockchain.GetPollPrivateDetailsSDK(fSetup, "1")
 		if err != nil {
 			t.Errorf("Failed to query poll private details: %v\n", err)
 		}
@@ -167,7 +170,7 @@ func TestChaincodeSDK(t *testing.T) {
 	/* Run UpdatePollStatus test */
 
 	t.Run("UpdatePollStatus", func(t *testing.T) {
-		_, err := UpdatePollStatusSDK(fSetup, "1", "closed")
+		_, err := blockchain.UpdatePollStatusSDK(fSetup, "1", "closed")
 		if err != nil {
 			t.Errorf("Failed to update poll status: %v\n", err)
 		}
