@@ -11,8 +11,17 @@ import (
 	ipfs "github.com/ipfs/go-ipfs-api"
 )
 
+const (
+	ccID = "vote"
+)
+
 
 func SetupApp(config *sdk.SDKConfig) (*web.Application, error) {
+
+	// add the vote app's chaincode path to the config object
+	config.ChaincodePath[ccID] = "vote/chaincode"
+
+	// return the application object
 	return &web.Application{
 		FabricSDK: config,
 		IpfsShell: ipfs.NewShell("localhost:5001")}, nil
