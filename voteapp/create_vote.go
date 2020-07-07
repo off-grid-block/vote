@@ -1,18 +1,19 @@
-package blockchain
+package voteapp
 
 import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/vote/blockchain"
 	// "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"time"
 )
 
 
 // add entry using SDK
-func (s *SetupSDK) InitVoteSDK(PollID string, VoterID string, VoterSex string, VoterAge string, VoteHash string) (string, error) {
+func InitVoteSDK(s *blockchain.SetupSDK, PollID string, VoterID string, VoterSex string, VoterAge string, VoteHash string) (string, error) {
 
     // Generate a random salt to concatenate with the vote's IPFS CID
-    Salt := GenerateRandomSalt()
+    Salt := blockchain.GenerateRandomSalt()
 
     text := fmt.Sprintf(
         "{\"PollID\":\"%s\",\"VoterID\":\"%s\",\"VoterSex\":\"%s\",\"VoterAge\":%s,\"Salt\":\"%s\",\"VoteHash\":\"%s\"}",
@@ -31,16 +32,16 @@ func (s *SetupSDK) InitVoteSDK(PollID string, VoterID string, VoterSex string, V
 	transientDataMap["vote"] = []byte(text)
 
     // register chaincode event
-    registered, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+    registered, notifier, err := s.Event.RegisterChaincodeEvent("vote", eventID)
     if err != nil {
         return "Failed to register chaincode event", err
     }
 
     // unregister chaincode event
-    defer s.event.Unregister(registered)
+    defer s.Event.Unregister(registered)
 
     // Create a request for vote init and send it
-    response, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "initVote", Args: [][]byte{}, TransientMap: transientDataMap})
+    response, err := s.Client.Execute(channel.Request{ChaincodeID: "vote", Fcn: "initVote", Args: [][]byte{}, TransientMap: transientDataMap})
     if err != nil {
         return "", fmt.Errorf("failed to initiate: %v", err)
     }

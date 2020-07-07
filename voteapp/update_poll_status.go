@@ -1,26 +1,27 @@
-package blockchain
+package voteapp
 
 import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/vote/blockchain"
 	// "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"time"
 )
 
 
-func (s *SetupSDK) UpdatePollStatusSDK(pollID, status string) (string, error) {
+func UpdatePollStatusSDK(s *blockchain.SetupSDK, pollID, status string) (string, error) {
 
     eventID := "updateEvent"
 
     // register chaincode event
-    registered, notifier, err := s.event.RegisterChaincodeEvent(s.ChainCodeID, eventID)
+    registered, notifier, err := s.Event.RegisterChaincodeEvent("vote", eventID)
     if err != nil {
         return "Failed to register chaincode event", err
     }
-    defer s.event.Unregister(registered)
+    defer s.Event.Unregister(registered)
 
     // Create a request for poll update and send it
-    response, err := s.client.Execute(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "updatePollStatus", Args: [][]byte{[]byte(pollID), []byte(status)}})
+    response, err := s.Client.Execute(channel.Request{ChaincodeID: "vote", Fcn: "updatePollStatus", Args: [][]byte{[]byte(pollID), []byte(status)}})
     if err != nil {
         return "", fmt.Errorf("failed to update: %v", err)
     }

@@ -1,20 +1,21 @@
-package blockchain
+package voteapp
 
 import (
     "fmt"
     "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
     // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    "github.com/off-grid-block/vote/blockchain"
     "bytes"
     "encoding/gob"
 )
 
 
 // query the private details of a vote by poll
-func (s *SetupSDK) QueryVotePrivateDetailsByPollSDK(pollID string) ([]string, error) {
+func QueryVotePrivateDetailsByPollSDK(s *blockchain.SetupSDK, pollID string) ([]string, error) {
 
     var cidList []string
 
-    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotePrivateDetailsByPoll",  Args: [][]byte{[]byte(pollID)}})
+    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotePrivateDetailsByPoll",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return cidList, fmt.Errorf("failed to query: %v", err)
     }
@@ -30,9 +31,9 @@ func (s *SetupSDK) QueryVotePrivateDetailsByPollSDK(pollID string) ([]string, er
 }
 
 // query votes of a particular poll
-func (s *SetupSDK) QueryVotesByPollSDK(pollID string) (string, error) {
+func QueryVotesByPollSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
 
-    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotesByPoll", Args: [][]byte{[]byte(pollID)}})
+    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotesByPoll", Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -41,9 +42,9 @@ func (s *SetupSDK) QueryVotesByPollSDK(pollID string) (string, error) {
 }
 
 // query votes of a particular poll
-func (s *SetupSDK) QueryVotesByVoterSDK(voterID string) (string, error) {
+func QueryVotesByVoterSDK(s *blockchain.SetupSDK, voterID string) (string, error) {
 
-    response, err := s.client.Query(channel.Request{ChaincodeID: s.ChainCodeID, Fcn: "queryVotesByVoter", Args: [][]byte{[]byte(voterID)}})
+    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotesByVoter", Args: [][]byte{[]byte(voterID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }

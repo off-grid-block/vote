@@ -3,6 +3,7 @@ package web
 import (
 	"net/http"
 	"encoding/json"
+	"github.com/off-grid-block/vote/voteapp"
 )
 
 // Initialize & push votes on the Fabric network
@@ -27,7 +28,7 @@ func (app *Application) initVoteHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Call InitVoteSDK() to initialize a vote on the Fabric network
-	resp, err := app.FabricSDK.InitVoteSDK(v.PollID, v.VoterID, v.Sex, v.Age, cid)
+	resp, err := voteapp.InitVoteSDK(app.FabricSDK, v.PollID, v.VoterID, v.Sex, v.Age, cid)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

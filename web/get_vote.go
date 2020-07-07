@@ -3,10 +3,10 @@ package web
 import (
 	"net/http"
 	"encoding/json"
-
 	"fmt"
-	
+
 	"github.com/gorilla/mux"
+	"github.com/off-grid-block/vote/voteapp"
 )
 
 
@@ -17,7 +17,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 	pollID := vars["pollid"]
 	voterID := vars["voterid"]
 
-	resp, err := app.FabricSDK.GetVoteSDK(pollID, voterID)
+	resp, err := voteapp.GetVoteSDK(app.FabricSDK, pollID, voterID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -34,7 +34,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 	// Retrieve contents of vote
 	var voteContentResp interface{}
 
-	resp, err = app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
+	resp, err = voteapp.GetVotePrivateDetailsSDK(app.FabricSDK, pollID, voterID)
 	if err != nil { // if no access, simply ignore request
 		// http.Error(w, err.Error(), http.StatusInternalServerError)
 		fmt.Println("You do not have permission to see these vote details")
@@ -55,7 +55,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve private data hash
-	hash, err := app.FabricSDK.GetVotePrivateDetailsHashSDK(pollID, voterID)
+	hash, err := voteapp.GetVotePrivateDetailsHashSDK(app.FabricSDK, pollID, voterID)
 	if err != nil { // if user doesn't have access, ignore request
 		fmt.Println("You do not have permission to see the private data hash")
 		hash = ""
@@ -86,7 +86,7 @@ func (app *Application) getVoteHandler(w http.ResponseWriter, r *http.Request) {
 // 	pollID := vars["pollid"]
 // 	voterID := vars["voterid"]
 
-// 	resp, err := app.FabricSDK.GetVotePrivateDetailsSDK(pollID, voterID)
+// 	resp, err := voteapp.GetVotePrivateDetailsSDK(pollID, voterID)
 // 	if err != nil {
 // 		http.Error(w, err.Error(), http.StatusInternalServerError)
 // 		return

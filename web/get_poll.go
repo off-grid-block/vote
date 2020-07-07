@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	
 	"github.com/gorilla/mux"
+	"github.com/off-grid-block/vote/voteapp"
 )
 
 
@@ -15,7 +16,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 	pollID := vars["pollid"]
 
 	// Retrieve public details from Fabric
-	public, err := app.FabricSDK.GetPollSDK(pollID)
+	public, err := voteapp.GetPollSDK(app.FabricSDK, pollID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -32,7 +33,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 
 	var content interface{}
 
-	private, err := app.FabricSDK.GetPollPrivateDetailsSDK(pollID)
+	private, err := voteapp.GetPollPrivateDetailsSDK(app.FabricSDK, pollID)
 	// if there is an error, that means the peer does not have access to
 	// the private details. So only proceed with the retrieval of private
 	// data from IPFS if GetPollPrivateDetailsSDK succeeds.
@@ -81,7 +82,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 // 	vars := mux.Vars(r)
 // 	pollID := vars["pollid"]
 
-// 	resp, err := app.FabricSDK.GetPollPrivateDetailsSDK(pollID)
+// 	resp, err := voteapp.GetPollPrivateDetailsSDK(app.FabricSDK, pollID)
 // 	if err != nil {
 // 		http.Error(w, err.Error(), http.StatusInternalServerError)
 // 		return
@@ -107,7 +108,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) queryAllPollsHandler(w http.ResponseWriter, r *http.Request) {
 
-	resp, err := app.FabricSDK.QueryAllPollsSDK()
+	resp, err := voteapp.QueryAllPollsSDK(app.FabricSDK)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

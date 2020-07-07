@@ -5,6 +5,9 @@ import (
 	"net/http"
 	"strings"
 	"fmt"
+
+	"github.com/off-grid-block/vote/core"
+
 	caMsp "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 )
 
@@ -41,7 +44,7 @@ func (app *Application) userHandler(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	_, err = app.FabricSDK.RegUser(data)
+	_, err = core.RegUser(app.FabricSDK, data)
 
 	if err != nil {
 		fmt.Println(err)

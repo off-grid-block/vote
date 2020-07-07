@@ -6,6 +6,7 @@ import (
 	"encoding/gob"
 	
 	"github.com/gorilla/mux"
+	"github.com/off-grid-block/vote/voteapp"
 )
 
 
@@ -14,7 +15,7 @@ func (app *Application) queryVotesByPollHandler(w http.ResponseWriter, r *http.R
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
 
-	resp, err := app.FabricSDK.QueryVotesByPollSDK(pollID)
+	resp, err := voteapp.QueryVotesByPollSDK(app.FabricSDK, pollID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -29,7 +30,7 @@ func (app *Application) queryVotePrivateDetailsByPollHandler(w http.ResponseWrit
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
 
-	cidList, err := app.FabricSDK.QueryVotePrivateDetailsByPollSDK(pollID)
+	cidList, err := voteapp.QueryVotePrivateDetailsByPollSDK(app.FabricSDK, pollID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -64,7 +65,7 @@ func (app *Application) queryVotesByVoterHandler(w http.ResponseWriter, r *http.
 	vars := mux.Vars(r)
 	voterID := vars["voterid"]
 
-	resp, err := app.FabricSDK.QueryVotesByVoterSDK(voterID)
+	resp, err := voteapp.QueryVotesByVoterSDK(app.FabricSDK, voterID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

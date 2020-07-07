@@ -22,18 +22,17 @@ type SetupSDK struct {
 	OrgID           string
 	OrdererID       string
 	ChannelID       string
-	ChainCodeID     string
 	initialized     bool
 	ChannelConfig   string
 	ChaincodeGoPath string
-	ChaincodePath   string
+	ChaincodePath   map[string]string
 	OrgAdmin        string
 	OrgName         string
 	UserName        string
-	client          *channel.Client
-	mgmt            *resmgmt.Client
-	fsdk            *fabsdk.FabricSDK
-	event           *event.Client
+	Client          *channel.Client
+	Mgmt            *resmgmt.Client
+	Fsdk            *fabsdk.FabricSDK
+	Event           *event.Client
 	MgmtIdentity	msp.SigningIdentity
 }
 
@@ -50,7 +49,7 @@ func (s *SetupSDK) Initialization() error {
 	if err != nil {
 		return errors.WithMessage(err, "failed to create SDK")
 	}
-	s.fsdk = fsdk
+	s.Fsdk = fsdk
 	fmt.Println("SDK is now created")
 
 	fmt.Println("Initialization Successful")
@@ -63,7 +62,7 @@ func (s *SetupSDK) Initialization() error {
 func (s *SetupSDK) AdminSetup() error {
 
 	// The resource management client is responsible for managing channels (create/update channel)
-	resourceManagerClientContext := s.fsdk.Context(fabsdk.WithUser(s.OrgAdmin), fabsdk.WithOrg(s.OrgName))
+	resourceManagerClientContext := s.Fsdk.Context(fabsdk.WithUser(s.OrgAdmin), fabsdk.WithOrg(s.OrgName))
 //	if err != nil {
 //		return errors.WithMessage(err, "failed to load Admin identity")
 //	}
@@ -71,11 +70,11 @@ func (s *SetupSDK) AdminSetup() error {
 	if err != nil {
 		return errors.WithMessage(err, "failed to create channel management client from Admin identity")
 	}
-	s.mgmt = resMgmtClient
+	s.Mgmt = resMgmtClient
 	fmt.Println("Resource management client created")
 
 	// The MSP client allow us to retrieve user information from their identity, like its signing identity which we will need to save the channel
-	mspClient, err := mspclient.New(s.fsdk.Context(), mspclient.WithOrg(s.OrgName))
+	mspClient, err := mspclient.New(s.Fsdk.Context(), mspclient.WithOrg(s.OrgName))
 	if err != nil {
 		return errors.WithMessage(err, "failed to create MSP client")
 	}
@@ -92,14 +91,14 @@ func (s *SetupSDK) ChannelSetup() error {
 
 	req := resmgmt.SaveChannelRequest{ChannelID: s.ChannelID, ChannelConfigPath: s.ChannelConfig, SigningIdentities: []msp.SigningIdentity{s.MgmtIdentity}}
 	//create channel
-	txID, err := s.mgmt.SaveChannel(req, resmgmt.WithOrdererEndpoint(s.OrdererID))
+	txID, err := s.Mgmt.SaveChannel(req, resmgmt.WithOrdererEndpoint(s.OrdererID))
 	if err != nil || txID.TransactionID == "" {
 		return errors.WithMessage(err, "failed to save channel")
 	}
 	fmt.Println("Channel created")
 
 	// Make mgmt user join the previously created channel
-	if err = s.mgmt.JoinChannel(s.ChannelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(s.OrdererID)); err != nil {
+	if err = s.Mgmt.JoinChannel(s.ChannelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(s.OrdererID)); err != nil {
 		return errors.WithMessage(err, "failed to make mgmt join channel")
 	}
 	fmt.Println("Channel joined")
@@ -132,18 +131,18 @@ func newCollectionConfig(colName, policy string, reqPeerCount, maxPeerCount int3
 }
 
 // Installs and instantiates chaincode
-func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
+func (s *SetupSDK) ChainCodeInstallationInstantiation(ccID string) error {
 
 	// Create the chaincode package that will be sent to the peers
-	ccPackage, err := packager.NewCCPackage(s.ChaincodePath, s.ChaincodeGoPath)
+	ccPackage, err := packager.NewCCPackage(s.ChaincodePath[ccID], s.ChaincodeGoPath)
 	if err != nil {
 		return errors.WithMessage(err, "failed to create chaincode package")
 	}
 	fmt.Println("Chaincode package created")
 
 	// Install the chaincode to org peers
-	installCCReq := resmgmt.InstallCCRequest{Name: s.ChainCodeID, Path: s.ChaincodePath, Version: "0", Package: ccPackage}
-	_, err = s.mgmt.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+	installCCReq := resmgmt.InstallCCRequest{Name: ccID, Path: s.ChaincodePath[ccID], Version: "0", Package: ccPackage}
+	_, err = s.Mgmt.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 	if err != nil {
 		return errors.WithMessage(err, "failed to install chaincode")
 	}
@@ -195,12 +194,12 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 	cfg := []*cb.CollectionConfig{collCfgPrivVote, collCfgPrivPoll}
 
 	// instantiate chaincode with cc policy and collection configs
-	resp, err := s.mgmt.InstantiateCC(
+	resp, err := s.Mgmt.InstantiateCC(
 		// Channel ID
 		s.ChannelID, 
 		// InstantiateCCRequest struct
 		resmgmt.InstantiateCCRequest{
-			Name: s.ChainCodeID, 
+			Name: ccID, 
 			Path: s.ChaincodeGoPath, 
 			Version: "0", 
 			Args: [][]byte{[]byte("init")}, 
@@ -220,15 +219,15 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation() error {
 func (s*SetupSDK)  ClientSetup() error {
 	// Channel client is used to Query or Execute transactions
 	var err error
-	clientChannelContext := s.fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser(s.UserName))
-	s.client, err = channel.New(clientChannelContext)
+	clientChannelContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser(s.UserName))
+	s.Client, err = channel.New(clientChannelContext)
 	if err != nil {
 		return errors.WithMessage(err, "failed to create new channel client")
 	}
 	fmt.Println("Channel client created")
 
 	// Creation of the client which will enables access to our channel events
-	s.event, err = event.New(clientChannelContext)
+	s.Event, err = event.New(clientChannelContext)
 	if err != nil {
 		return errors.WithMessage(err, "failed to create new event client")
 	}
@@ -238,5 +237,5 @@ func (s*SetupSDK)  ClientSetup() error {
 }
 
 func (s *SetupSDK) CloseSDK() {
-	s.fsdk.Close()
+	s.Fsdk.Close()
 }
