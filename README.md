@@ -17,6 +17,32 @@ This is a repository for the voting application of the off-grid network.
 
 Install [IPFS](https://docs.ipfs.io/install/).
 
+docker run -d --name ipfs-node \
+  -v /tmp/ipfs-docker-staging:/export -v /tmp/ipfs-docker-data:/data/ipfs \
+  -p 8080:8080 -p 4001:4001 -p 127.0.0.1:5001:5001 \
+  ipfs/go-ipfs:latest
+
+
+docker build -t vote_test:latest .
+
+docker run -it --rm \
+--name vote_test \
+--network="host" \
+--mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/channel-artifacts,target=/config/channel-artifacts \
+--mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/crypto-config,target=/config/crypto-config \
+vote_test
+
+OR
+
+docker run -it --rm \
+--name vote_test \
+-p 8000:8000 \
+--network="net_byfn" \
+--mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/channel-artifacts,target=/config/channel-artifacts \
+--mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/crypto-config,target=/config/crypto-config \
+vote_test
+
+
 ### Code variables
 
 Navigate to the directory in which you want to clone this repository.
@@ -41,6 +67,7 @@ In `main.go`, modify the following fields of the `fSetup` struct literal for you
 
 To restart the network:
 ```./byfn.sh restart -s couchdb```
+
 To take down the network:
 ```./byfn.sh down```
 
@@ -54,8 +81,8 @@ To add other apps:
 3. add the following in `main()` under `fSetup.ChainCodeInstallationInstantiation("vote")`:
 ```
 err = fSetup.ChainCodeInstallationInstantiation(yourchaincodeID)
-	if err != nil {
-		fmt.Printf("Failed to install and instantiate chaincode: %v\n", err)
-		return
-	}
+if err != nil {
+	fmt.Printf("Failed to install and instantiate chaincode: %v\n", err)
+	return
+}
 ```

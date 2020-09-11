@@ -65,7 +65,7 @@ client:
 
   # Root of the MSP directories with keys and certs.
   cryptoconfig:
-    path: /Users/brianli/deon/fabric-samples/first-network/crypto-config
+    path: /config/crypto-config
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
@@ -306,7 +306,7 @@ organizations:
 orderers:
   orderer.example.com:
     # [Optional] Default: Infer from hostname
-    url: localhost:7050
+    url: host.docker.internal:7050
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
@@ -324,7 +324,7 @@ orderers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+      path: /config/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
       #path: first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
 
@@ -335,7 +335,7 @@ peers:
   peer0.org1.example.com:
     # this URL is used to send endorsement and query requests
     # [Optional] Default: Infer from hostname
-    url: localhost:7051
+    url: host.docker.internal:7051
 
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
@@ -351,12 +351,12 @@ peers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: /config/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
       #path: first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer1.org1.example.com:
     # this URL is used to send endorsement and query requests
-    url: localhost:8051
+    url: host.docker.internal:8051
 
     grpcOptions:
       ssl-target-name-override: peer1.org1.example.com
@@ -372,12 +372,12 @@ peers:
 
     tlsCACerts:
       # Certificate location absolute path
-      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: /config/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
       #path: first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer0.org2.example.com:
     # this URL is used to send endorsement and query requests
-    url: localhost:9051
+    url: host.docker.internal:9051
     grpcOptions:
       ssl-target-name-override: peer0.org2.example.com
       # These parameters should be set in coordination with the keepalive policy on the server,
@@ -391,11 +391,11 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: /config/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
   peer1.org2.example.com:
     # this URL is used to send endorsement and query requests
-    url: localhost:10051
+    url: host.docker.internal:10051
     grpcOptions:
       ssl-target-name-override: peer1.org2.example.com
       # These parameters should be set in coordination with the keepalive policy on the server,
@@ -409,7 +409,7 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: /config/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
 #
 # Fabric-CA is a special kind of Certificate Authority provided by Hyperledger Fabric which allows
@@ -477,18 +477,18 @@ peers:
 entityMatchers:
   peer:
     - pattern: (\w+).org1.example.com:(\d+)
-      urlSubstitutionExp: localhost:${2}
+      urlSubstitutionExp: host.docker.internal:${2}
       sslTargetOverrideUrlSubstitutionExp: ${1}.org1.example.com
       mappedHost: ${1}.org1.example.com
 
     - pattern: (\w+).org2.example.com:(\d+)
-      urlSubstitutionExp: localhost:${2}
+      urlSubstitutionExp: host.docker.internal:${2}
       sslTargetOverrideUrlSubstitutionExp: ${1}.org2.example.com
       mappedHost: ${1}.org2.example.com
 
   orderer:
     - pattern: (\w+).example.(\w+)
-      urlSubstitutionExp: localhost:7050
+      urlSubstitutionExp: host.docker.internal:7050
       sslTargetOverrideUrlSubstitutionExp: orderer.example.com
       mappedHost: orderer.example.com
 #

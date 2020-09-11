@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/off-grid-block/vote/blockchain"
 	"github.com/off-grid-block/vote/web"
-	// "os"
+	"os"
 	// "bufio"
 	// "strings"
 
@@ -14,18 +14,18 @@ import (
 func main() {
 
 	ccPaths := map[string]string{
-		"vote": "vote/chaincode",
+		"vote": "chaincode",
 	}
 
 	fSetup := blockchain.SetupSDK {
 		OrdererID: 			"orderer.example.com",
 		ChannelID: 			"mychannel",
-		ChannelConfig:		"/Users/brianli/deon/fabric-samples/first-network/channel-artifacts/channel.tx",
-		ChaincodeGoPath:	"/Users/brianli/deon",
+		ChannelConfig:		os.Getenv("CHANNEL_CONFIG"),
+		ChaincodeGoPath:	os.Getenv("CHAINCODE_GOPATH"),
 		ChaincodePath:		ccPaths,
 		OrgAdmin:			"Admin",
 		OrgName:			"org1",
-		ConfigFile:			"config.yaml",
+		ConfigFile:			"/src/config.yaml",
 		UserName:			"User1",
 	}
 
@@ -66,7 +66,7 @@ func main() {
 	}
 
 	// create shell to connect to IPFS
-	sh := ipfs.NewShell("localhost:5001")
+	sh := ipfs.NewShell(os.Getenv("IPFS_ENDPOINT"))
 
 	app := &web.Application{
 		FabricSDK: &fSetup,
