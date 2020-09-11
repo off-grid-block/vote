@@ -1,0 +1,34 @@
+version: "3.3"
+
+services:
+
+  deon:
+    image: deon:latest
+    container_name: deon.example.com
+    build: .
+    extra_hosts:
+      - "localhost:10.0.0.69"
+    ports:
+      - "8000:8000"
+    networks:
+      - net_byfn
+    volumes:
+      - "~/deon/fabric-samples/first-network/channel-artifacts:/config/channel-artifacts:ro"
+      - "~/deon/fabric-samples/first-network/crypto-config:/config/crypto-config:ro"
+
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    container_name: ipfs-node
+    ports:
+      - "8080:8080"
+      - "4001:4001"
+      - "5001:5001"
+    volumes:
+      - "/tmp/ipfs-docker-staging:/export"
+      - "/tmp/ipfs-docker-data:/data/ipfs"
+    networks:
+      - net_byfn
+
+networks:
+  net_byfn:
+    external: true

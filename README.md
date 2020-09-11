@@ -13,64 +13,20 @@ This is a repository for the voting application of the off-grid network.
 4. Download the Hyperledger Fabric v1.4.2 docker images:
 ```curl -sSL https://bit.ly/2ysbOFE | bash -s -- 1.4.2```
 
-### IPFS
+### Launch using Docker
 
-Install [IPFS](https://docs.ipfs.io/install/).
+Start up the Fabric network:
+1. ```cd fabric-samples/first-network``` (inside your fabric-samples repository)
+2. ```./byfn.sh up -s couchdb```
 
-docker run -d --name ipfs-node \
-  -v /tmp/ipfs-docker-staging:/export -v /tmp/ipfs-docker-data:/data/ipfs \
-  -p 8080:8080 -p 4001:4001 -p 127.0.0.1:5001:5001 \
-  ipfs/go-ipfs:latest
+Start up the DEON service API:
+1. ```cd``` into your cloned version of this repository.
+2. ```docker-compose up```
+3. ```access the API at localhost:8000/api/v1/```
 
-
-docker build -t vote_test:latest .
-
-docker run -it --rm \
---name vote_test \
---network="host" \
---mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/channel-artifacts,target=/config/channel-artifacts \
---mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/crypto-config,target=/config/crypto-config \
-vote_test
-
-OR
-
-docker run -it --rm \
---name vote_test \
--p 8000:8000 \
---network="net_byfn" \
---mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/channel-artifacts,target=/config/channel-artifacts \
---mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/crypto-config,target=/config/crypto-config \
-vote_test
-
-
-### Code variables
-
-Navigate to the directory in which you want to clone this repository.
-```
-mkdir src && cd src
-git clone https://github.com/off-grid-block/vote.git
-```
-
-In `main.go`, modify the following fields of the `fSetup` struct literal for your environment:
-
-- `ChannelConfig` is the absolute path to `fabric-samples/first-network/channel-artifacts/channel.tx`.
-- `ChaincodeGoPath` is the directory in which you created the `src` directory.
-
-## Launch the DEON service API
-
-1. To start up the Hyperledger Fabric test network, navigate to `fabric-samples/first-network`:
-```./byfn.sh up -s couchdb```
-2. In a separate shell session, start up the IPFS daemon:
-```ipfs daemon```
-3. Navigate to this repository on your machine. Run `go build` inside `chaincode` and in the top-level directory. 
-4. Launch the API with `./vote`
-
-To restart the network:
-```./byfn.sh restart -s couchdb```
-
-To take down the network:
-```./byfn.sh down```
-
+To stop the network and DEON service:
+1. ```./byfn.sh down``` inside ```fabric-samples/first-network```
+2. ```docker-compose down```
 
 ## Building additional apps
 
@@ -85,4 +41,44 @@ if err != nil {
 	fmt.Printf("Failed to install and instantiate chaincode: %v\n", err)
 	return
 }
+```
+
+## Notes
+
+Reference for running docker containers without docker-compose
+
+Start IPFS container:
+```
+docker run -d --name ipfs-node \
+  -v /tmp/ipfs-docker-staging:/export -v /tmp/ipfs-docker-data:/data/ipfs \
+   -p 8080:8080 -p 4001:4001 -p 5001:5001 \
+  ipfs/go-ipfs:latest
+```
+
+Build DEON service:
+```
+docker build -t vote_test:latest .
+```
+
+Run DEON service container:
+```
+docker run -it --rm \
+  --name vote_test \
+  --network="host" \
+  --mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/channel-artifacts,target=/config/channel-artifacts \
+  --mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/crypto-config,target=/config/crypto-config \
+  vote_test
+```
+
+OR
+
+```
+docker run -it --rm \
+  --add-host="localhost:10.0.0.69" \
+  --name vote_test \
+  -p 8000:8000 \
+  --network="net_byfn" \
+  --mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/channel-artifacts,target=/config/channel-artifacts,readonly \
+  --mount type=bind,source=/Users/brianli/deon/fabric-samples/first-network/crypto-config,target=/config/crypto-config,readonly \
+  vote_test
 ```

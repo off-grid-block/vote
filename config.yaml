@@ -306,7 +306,7 @@ organizations:
 orderers:
   orderer.example.com:
     # [Optional] Default: Infer from hostname
-    url: host.docker.internal:7050
+    url: localhost:7050
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
@@ -335,7 +335,7 @@ peers:
   peer0.org1.example.com:
     # this URL is used to send endorsement and query requests
     # [Optional] Default: Infer from hostname
-    url: host.docker.internal:7051
+    url: localhost:7051
 
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
@@ -356,7 +356,7 @@ peers:
 
   peer1.org1.example.com:
     # this URL is used to send endorsement and query requests
-    url: host.docker.internal:8051
+    url: localhost:8051
 
     grpcOptions:
       ssl-target-name-override: peer1.org1.example.com
@@ -377,7 +377,7 @@ peers:
 
   peer0.org2.example.com:
     # this URL is used to send endorsement and query requests
-    url: host.docker.internal:9051
+    url: localhost:9051
     grpcOptions:
       ssl-target-name-override: peer0.org2.example.com
       # These parameters should be set in coordination with the keepalive policy on the server,
@@ -395,7 +395,7 @@ peers:
 
   peer1.org2.example.com:
     # this URL is used to send endorsement and query requests
-    url: host.docker.internal:10051
+    url: localhost:10051
     grpcOptions:
       ssl-target-name-override: peer1.org2.example.com
       # These parameters should be set in coordination with the keepalive policy on the server,
@@ -477,18 +477,18 @@ peers:
 entityMatchers:
   peer:
     - pattern: (\w+).org1.example.com:(\d+)
-      urlSubstitutionExp: host.docker.internal:${2}
+      urlSubstitutionExp: localhost:${2}
       sslTargetOverrideUrlSubstitutionExp: ${1}.org1.example.com
       mappedHost: ${1}.org1.example.com
 
     - pattern: (\w+).org2.example.com:(\d+)
-      urlSubstitutionExp: host.docker.internal:${2}
+      urlSubstitutionExp: localhost:${2}
       sslTargetOverrideUrlSubstitutionExp: ${1}.org2.example.com
       mappedHost: ${1}.org2.example.com
 
   orderer:
     - pattern: (\w+).example.(\w+)
-      urlSubstitutionExp: host.docker.internal:7050
+      urlSubstitutionExp: localhost:7050
       sslTargetOverrideUrlSubstitutionExp: orderer.example.com
       mappedHost: orderer.example.com
 #

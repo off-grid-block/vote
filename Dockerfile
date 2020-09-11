@@ -10,12 +10,13 @@ WORKDIR /src/
 # Copy project to src directory
 COPY . /src/
 
-
+# Get & install packages before building
+RUN go get
 # Compile source code (dependencies from go.mod also installed)
 RUN go build -o /bin/vote
-# CMD ["/bin/vote"]
+CMD ["/bin/vote"]
 
-# ### Stage 2: IPFS node ###
+# ### Stage 2: Move executable ###
 # FROM scratch
 
 # # Copy over compiled executable from previous stage
