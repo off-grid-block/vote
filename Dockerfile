@@ -1,7 +1,7 @@
 ### Stage 1: Build source code ###
 FROM golang:1.13-alpine AS build
 
-ENV IPFS_ENDPOINT localhost:5001
+ENV IPFS_ENDPOINT ipfs.node.example.com:5001
 ENV CHANNEL_CONFIG /config/channel-artifacts/channel.tx
 ENV CHAINCODE_GOPATH /
 
