@@ -10,7 +10,7 @@ import (
 
 func GetPollSDK(s *sdk.SDKConfig, pollID string) (string, error) {
 
-    response, err := s.Client.Query(channel.Request{ChaincodeID: ccID, Fcn: "getPoll",  Args: [][]byte{[]byte(pollID)}})
+    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPoll",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -22,7 +22,7 @@ func GetPollSDK(s *sdk.SDKConfig, pollID string) (string, error) {
 func GetPollPrivateDetailsSDK(s *sdk.SDKConfig, pollID string) (string, error) {
 
     // create and send request for reading an entry
-    response, err := s.Client.Query(channel.Request{ChaincodeID: ccID, Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(pollID)}})
+    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -35,7 +35,7 @@ func QueryAllPollsSDK(s *sdk.SDKConfig) (string, error) {
 
     response, err := s.Client.Query(
         channel.Request{
-            ChaincodeID: ccID, 
+            ChaincodeID: "vote", 
             Fcn: "queryAllPolls", 
             Args: [][]byte{}})
     if err != nil {

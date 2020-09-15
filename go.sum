@@ -73,6 +73,7 @@ github.com/jrick/logrotate v1.0.0/go.mod h1:LNinyqDIJnpAur+b8yyulnQw/wDuN1+BYKlT
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/kkdai/bstream v0.0.0-20161212061736-f391b8402d23/go.mod h1:J+Gs4SYgM6CZQHDETBtE9HaSEkGmuNXF86RwHhHUvq4=
+github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515 h1:T+h1c/A9Gawja4Y9mFVWj2vyii2bbUNDw3kt9VxK2EY=
 github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515/go.mod h1:+0opPa2QZZtGFBFZlji/RkVcI2GknAs/DXo4wKdlNEc=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
@@ -128,6 +129,8 @@ github.com/off-grid-block/core-interface v0.0.0-20200614145600-c841655c7430 h1:C
 github.com/off-grid-block/core-interface v0.0.0-20200614145600-c841655c7430/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
 github.com/off-grid-block/core-interface v0.0.0-20200614195207-2ed65a989bd0 h1:ANH8aV/CqOmVrHW/YcAeNgjnx/aAPexbylhrrSZ5f2w=
 github.com/off-grid-block/core-interface v0.0.0-20200614195207-2ed65a989bd0/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
+github.com/off-grid-block/core-interface v0.0.0-20200914183632-244dc368f166 h1:7lorY8PaTialoJbCf0zS1QCifwMAzTJ/a3dfJpTuGZg=
+github.com/off-grid-block/core-interface v0.0.0-20200914183632-244dc368f166/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
 github.com/off-grid-block/off-grid-sdk v0.0.0-20191024214633-a41d78581dff/go.mod h1:49Y+H1IAyVomXeT4MW34Ekp0Amz3gIcWboKTVhH4OR4=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
@@ -148,7 +151,9 @@ github.com/prometheus/common v0.0.0-20180518154759-7600349dcfe1 h1:osmNoEW2SCW3L
 github.com/prometheus/common v0.0.0-20180518154759-7600349dcfe1/go.mod h1:daVV7qP5qjZbuso7PdcryaAu0sAZbrN9i7WWcTMWvro=
 github.com/prometheus/procfs v0.0.0-20180705121852-ae68e2d4c00f h1:c9M4CCa6g8WURSsbrl3lb/w/G1Z5xZpYvhhjdcVDOkE=
 github.com/prometheus/procfs v0.0.0-20180705121852-ae68e2d4c00f/go.mod h1:c3At6R/oaqEKCNdg8wHV1ftS6bRYblBhIjjI8uT2IGk=
+github.com/spacemonkeygo/openssl v0.0.0-20181017203307-c2dcc5cca94a h1:/eS3yfGjQKG+9kayBkj0ip1BGhq6zJ3eaVksphxAaek=
 github.com/spacemonkeygo/openssl v0.0.0-20181017203307-c2dcc5cca94a/go.mod h1:7AyxJNCJ7SBZ1MfVQCWD6Uqo2oubI2Eq2y2eqf+A5r0=
+github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572 h1:RC6RW7j+1+HkWaX/Yh71Ee5ZHaHYt7ZP4sQgUrm6cDU=
 github.com/spacemonkeygo/spacelog v0.0.0-20180420211403-2296661a0572/go.mod h1:w0SWMsp6j9O/dk4/ZpIhL+3CkG8ofA2vuv7k+ltqUMc=
 github.com/spaolacci/murmur3 v1.1.0 h1:7c1g84S4BPRrfL5Xrdp6fOJ206sU9y293DDHaoy0bLI=
 github.com/spaolacci/murmur3 v1.1.0/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=
