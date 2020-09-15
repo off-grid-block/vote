@@ -131,6 +131,8 @@ github.com/off-grid-block/core-interface v0.0.0-20200614195207-2ed65a989bd0 h1:A
 github.com/off-grid-block/core-interface v0.0.0-20200614195207-2ed65a989bd0/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
 github.com/off-grid-block/core-interface v0.0.0-20200914183632-244dc368f166 h1:7lorY8PaTialoJbCf0zS1QCifwMAzTJ/a3dfJpTuGZg=
 github.com/off-grid-block/core-interface v0.0.0-20200914183632-244dc368f166/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
+github.com/off-grid-block/core-interface v0.0.0-20200915132455-14563a2cd9b8 h1:dr0EswDIbxUVPyZzmUY4AOKBWONtmBkN5XEz0mYXI44=
+github.com/off-grid-block/core-interface v0.0.0-20200915132455-14563a2cd9b8/go.mod h1:z4NrYo9B/SRZ5ogxTTd9O/V6vCXjcgMLf27gEMCySFw=
 github.com/off-grid-block/off-grid-sdk v0.0.0-20191024214633-a41d78581dff/go.mod h1:49Y+H1IAyVomXeT4MW34Ekp0Amz3gIcWboKTVhH4OR4=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
