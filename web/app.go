@@ -98,11 +98,6 @@ func Serve(app *Application) {
 	// test api homepage
 	api.HandleFunc("/", HomeHandler)
 
-	/********************************/
-	/* identity management endpoint */
-	/********************************/
-	api.HandleFunc("/application", app.userHandler).Methods("POST")
-
 	/*********************************/
 	/*	subrouter for "poll" prefix  */
 	/*********************************/
@@ -162,6 +157,6 @@ func Serve(app *Application) {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	fmt.Println("Listening on http://0.0.0.0:8000/...")
+	fmt.Printf("Listening on %v...\n", srv.Addr)
 	log.Fatal(srv.ListenAndServe())
 }

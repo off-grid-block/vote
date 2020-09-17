@@ -44,15 +44,6 @@ func main() {
 		return
 	}
 
-	// fSetup.ChannelID = userInput("Enter channel name: ")
-	// fmt.Printf("ChannelID is named %s\n", fSetup.ChannelID)
-
-	err = fSetup.ChannelSetup()
-	if err != nil {
-		fmt.Printf("Failed to set up channel: %v\n", err)
-		return
-	}
-
 	err = fSetup.ChainCodeInstallationInstantiation("vote")
 	if err != nil {
 		fmt.Printf("Failed to install and instantiate chaincode: %v\n", err)
