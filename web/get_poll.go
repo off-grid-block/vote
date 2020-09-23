@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	
 	"github.com/gorilla/mux"
-	"github.com/off-grid-block/vote/voteapp"
+	"github.com/off-grid-block/vote/blockchain"
 )
 
 
@@ -16,7 +16,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 	pollID := vars["pollid"]
 
 	// Retrieve public details from Fabric
-	public, err := voteapp.GetPollSDK(app.FabricSDK, pollID)
+	public, err := blockchain.GetPollSDK(app.FabricSDK, pollID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -33,7 +33,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 
 	var content interface{}
 
-	private, err := voteapp.GetPollPrivateDetailsSDK(app.FabricSDK, pollID)
+	private, err := blockchain.GetPollPrivateDetailsSDK(app.FabricSDK, pollID)
 	// if there is an error, that means the peer does not have access to
 	// the private details. So only proceed with the retrieval of private
 	// data from IPFS if GetPollPrivateDetailsSDK succeeds.
@@ -82,7 +82,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 // 	vars := mux.Vars(r)
 // 	pollID := vars["pollid"]
 
-// 	resp, err := voteapp.GetPollPrivateDetailsSDK(app.FabricSDK, pollID)
+// 	resp, err := blockchain.GetPollPrivateDetailsSDK(app.FabricSDK, pollID)
 // 	if err != nil {
 // 		http.Error(w, err.Error(), http.StatusInternalServerError)
 // 		return
@@ -108,7 +108,7 @@ func (app *Application) getPollHandler(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) queryAllPollsHandler(w http.ResponseWriter, r *http.Request) {
 
-	resp, err := voteapp.QueryAllPollsSDK(app.FabricSDK)
+	resp, err := blockchain.QueryAllPollsSDK(app.FabricSDK)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

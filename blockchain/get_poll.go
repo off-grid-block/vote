@@ -30,7 +30,7 @@ func GetPollPrivateDetailsSDK(s *SetupSDK, pollID string) (string, error) {
 }
 
 // retrieve all poll objects in state database
-func QueryAllPollsSDK(s *.SetupSDK) (string, error) {
+func QueryAllPollsSDK(s *SetupSDK) (string, error) {
 
     response, err := s.Client.Query(
         channel.Request{

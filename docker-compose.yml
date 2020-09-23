@@ -1,0 +1,19 @@
+version: "3.3"
+
+services:
+
+  vote:
+    image: deon/vote:latest
+    container_name: vote.example.com
+    build: .
+    ports:
+      - "8002:8002"
+    networks:
+      - net_byfn
+    volumes:
+      - "~/deon/fabric-samples/first-network/channel-artifacts:/config/channel-artifacts:ro"
+      - "~/deon/fabric-samples/first-network/crypto-config:/config/crypto-config:ro"
+
+networks:
+  net_byfn:
+    external: true

@@ -6,7 +6,7 @@ import (
 	"encoding/gob"
 	
 	"github.com/gorilla/mux"
-	"github.com/off-grid-block/vote/voteapp"
+	"github.com/off-grid-block/vote/blockchain"
 )
 
 
@@ -15,7 +15,7 @@ func (app *Application) queryVotesByPollHandler(w http.ResponseWriter, r *http.R
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
 
-	resp, err := voteapp.QueryVotesByPollSDK(app.FabricSDK, pollID)
+	resp, err := blockchain.QueryVotesByPollSDK(app.FabricSDK, pollID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -30,7 +30,7 @@ func (app *Application) queryVotePrivateDetailsByPollHandler(w http.ResponseWrit
 	vars := mux.Vars(r)
 	pollID := vars["pollid"]
 
-	cidList, err := voteapp.QueryVotePrivateDetailsByPollSDK(app.FabricSDK, pollID)
+	cidList, err := blockchain.QueryVotePrivateDetailsByPollSDK(app.FabricSDK, pollID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -65,7 +65,7 @@ func (app *Application) queryVotesByVoterHandler(w http.ResponseWriter, r *http.
 	vars := mux.Vars(r)
 	voterID := vars["voterid"]
 
-	resp, err := voteapp.QueryVotesByVoterSDK(app.FabricSDK, voterID)
+	resp, err := blockchain.QueryVotesByVoterSDK(app.FabricSDK, voterID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

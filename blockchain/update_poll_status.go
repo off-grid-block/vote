@@ -1,15 +1,14 @@
-package voteapp
+package blockchain
 
 import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    "github.com/off-grid-block/vote/blockchain"
 	// "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"time"
 )
 
 
-func UpdatePollStatusSDK(s *blockchain.SetupSDK, pollID, status string) (string, error) {
+func UpdatePollStatusSDK(s *SetupSDK, pollID, status string) (string, error) {
 
     eventID := "updateEvent"
 
