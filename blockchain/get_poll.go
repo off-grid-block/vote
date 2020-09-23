@@ -1,14 +1,13 @@
-package voteapp
+package blockchain
 
 import (
     "fmt"
     "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    "github.com/off-grid-block/vote/blockchain"
     // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 )
 
 
-func GetPollSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
+func GetPollSDK(s *SetupSDK, pollID string) (string, error) {
 
     response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPoll",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
@@ -19,7 +18,7 @@ func GetPollSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
 }
 
 // read private details of vote using SDK
-func GetPollPrivateDetailsSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
+func GetPollPrivateDetailsSDK(s *SetupSDK, pollID string) (string, error) {
 
     // create and send request for reading an entry
     response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(pollID)}})
@@ -31,7 +30,7 @@ func GetPollPrivateDetailsSDK(s *blockchain.SetupSDK, pollID string) (string, er
 }
 
 // retrieve all poll objects in state database
-func QueryAllPollsSDK(s *blockchain.SetupSDK) (string, error) {
+func QueryAllPollsSDK(s *.SetupSDK) (string, error) {
 
     response, err := s.Client.Query(
         channel.Request{

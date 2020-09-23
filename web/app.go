@@ -6,6 +6,7 @@ import (
 	"log"
 	"fmt"
 	"time"
+	"os"
 	"github.com/gorilla/mux"
 	ipfs "github.com/ipfs/go-ipfs-api"
 )
@@ -152,7 +153,7 @@ func Serve(app *Application) {
 
 	srv := &http.Server{
 		Handler: 	r,
-		Addr:		"0.0.0.0:8000",
+		Addr:		os.Getenv("API_URL"),
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

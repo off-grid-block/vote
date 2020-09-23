@@ -87,25 +87,6 @@ func (s *SetupSDK) AdminSetup() error {
 	return nil
 }
 
-func (s *SetupSDK) ChannelSetup() error {
-
-	req := resmgmt.SaveChannelRequest{ChannelID: s.ChannelID, ChannelConfigPath: s.ChannelConfig, SigningIdentities: []msp.SigningIdentity{s.MgmtIdentity}}
-	//create channel
-	txID, err := s.Mgmt.SaveChannel(req, resmgmt.WithOrdererEndpoint(s.OrdererID))
-	if err != nil || txID.TransactionID == "" {
-		return errors.WithMessage(err, "failed to save channel")
-	}
-	fmt.Println("Channel created")
-
-	// Make mgmt user join the previously created channel
-	if err = s.Mgmt.JoinChannel(s.ChannelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(s.OrdererID)); err != nil {
-		return errors.WithMessage(err, "failed to make mgmt join channel")
-	}
-	fmt.Println("Channel joined")
-
-	return nil
-}
-
 // Create collection config to for chaincode instantiation
 func newCollectionConfig(colName, policy string, reqPeerCount, maxPeerCount int32, blockToLive uint64) (*cb.CollectionConfig, error) {
 	p, err := cauthdsl.FromString(policy)

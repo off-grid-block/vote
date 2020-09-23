@@ -1,16 +1,15 @@
-package voteapp
+package blockchain
 
 import (
     "fmt"
     "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
     // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
-    "github.com/off-grid-block/vote/blockchain"
     "reflect"
 )
 
 
 //read entry on chaincode using SDK
-func GetVoteSDK(s *blockchain.SetupSDK, pollID, voterID string) (string, error) {
+func GetVoteSDK(s *SetupSDK, pollID, voterID string) (string, error) {
 
     // concatenate poll ID and voter ID to get vote key
     pollIdBytes := []byte(pollID)
@@ -27,7 +26,7 @@ func GetVoteSDK(s *blockchain.SetupSDK, pollID, voterID string) (string, error) 
 
 
 // read private details of vote using SDK
-func GetVotePrivateDetailsSDK(s *blockchain.SetupSDK, pollID, voterID string) (string, error) {
+func GetVotePrivateDetailsSDK(s *SetupSDK, pollID, voterID string) (string, error) {
 
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)
@@ -47,7 +46,7 @@ func GetVotePrivateDetailsSDK(s *blockchain.SetupSDK, pollID, voterID string) (s
 }
 
 // get the private data hash of a vote
-func GetVotePrivateDetailsHashSDK(s *blockchain.SetupSDK, pollID, voterID string) (string, error) {
+func GetVotePrivateDetailsHashSDK(s *SetupSDK, pollID, voterID string) (string, error) {
     
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)

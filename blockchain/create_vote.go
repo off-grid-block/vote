@@ -1,33 +1,34 @@
-package voteapp
+package blockchain
 
 import (
-    "fmt"
-    "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
-    "github.com/off-grid-block/vote/blockchain"
-    "time"
+	"fmt"
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+	// "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	"time"
 )
 
 
-// add entry of poll using SDK
-func InitPollSDK(s *blockchain.SetupSDK, PollID, Title, PollHash string) (string, error) {
+// add entry using SDK
+func InitVoteSDK(s *SetupSDK, PollID string, VoterID string, VoterSex string, VoterAge string, VoteHash string) (string, error) {
 
-    // Generate a random salt to concatenate with the poll's IPFS CID
-    Salt := blockchain.GenerateRandomSalt()
+    // Generate a random salt to concatenate with the vote's IPFS CID
+    Salt := GenerateRandomSalt()
 
     text := fmt.Sprintf(
-        "{\"PollID\":\"%s\",\"Title\":\"%s\",\"Salt\":\"%s\",\"PollHash\":\"%s\"}",
+        "{\"PollID\":\"%s\",\"VoterID\":\"%s\",\"VoterSex\":\"%s\",\"VoterAge\":%s,\"Salt\":\"%s\",\"VoteHash\":\"%s\"}",
         PollID,
-        Title,
+        VoterID,
+        VoterSex,
+        VoterAge,
         Salt,
-        PollHash,
+        VoteHash,
     )
 
     eventID := "initEvent"
 
     // Add data to transient map (because we are using private data, all of the data will be in the transient map)
-    transientDataMap := make(map[string][]byte)
-    transientDataMap["poll"] = []byte(text)
+	transientDataMap := make(map[string][]byte)
+	transientDataMap["vote"] = []byte(text)
 
     // register chaincode event
     registered, notifier, err := s.Event.RegisterChaincodeEvent("vote", eventID)
@@ -39,7 +40,7 @@ func InitPollSDK(s *blockchain.SetupSDK, PollID, Title, PollHash string) (string
     defer s.Event.Unregister(registered)
 
     // Create a request for vote init and send it
-    response, err := s.Client.Execute(channel.Request{ChaincodeID: "vote", Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
+    response, err := s.Client.Execute(channel.Request{ChaincodeID: "vote", Fcn: "initVote", Args: [][]byte{}, TransientMap: transientDataMap})
     if err != nil {
         return "", fmt.Errorf("failed to initiate: %v", err)
     }
