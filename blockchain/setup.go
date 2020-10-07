@@ -2,17 +2,19 @@ package blockchain
 
 import (
 	"fmt"
-	cb "github.com/hyperledger/fabric-protos-go/common"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/event"
-	mspclient "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
-	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
-	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
-	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
-	packager "github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
-	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
-	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
+	cb "github.com/off-grid-block/fabric-protos-go/common"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/client/event"
+	mspclient "github.com/off-grid-block/fabric-sdk-go/pkg/client/msp"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/client/resmgmt"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/common/errors/retry"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/common/providers/msp"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/common/providers/fab"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/common/providers/context"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/core/config"
+	packager "github.com/off-grid-block/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
+	"github.com/off-grid-block/fabric-sdk-go/pkg/fabsdk"
+	"github.com/off-grid-block/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
 	"github.com/pkg/errors"
 )
 
@@ -63,9 +65,7 @@ func (s *SetupSDK) AdminSetup() error {
 
 	// The resource management client is responsible for managing channels (create/update channel)
 	resourceManagerClientContext := s.Fsdk.Context(fabsdk.WithUser(s.OrgAdmin), fabsdk.WithOrg(s.OrgName))
-//	if err != nil {
-//		return errors.WithMessage(err, "failed to load Admin identity")
-//	}
+
 	resMgmtClient, err := resmgmt.New(resourceManagerClientContext)
 	if err != nil {
 		return errors.WithMessage(err, "failed to create channel management client from Admin identity")
@@ -196,25 +196,32 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation(ccID string) error {
 	return nil
 }
 
-//setup client and setupt access to channel events
-func (s*SetupSDK)  ClientSetup() error {
-	// Channel client is used to Query or Execute transactions
-	var err error
-	clientChannelContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser(s.UserName))
-	s.Client, err = channel.New(clientChannelContext)
-	if err != nil {
-		return errors.WithMessage(err, "failed to create new channel client")
-	}
-	fmt.Println("Channel client created")
+func (s *SetupSDK) CreateChannelClient(clientContext context.ChannelProvider) (*channel.Client, error) {
 
-	// Creation of the client which will enables access to our channel events
-	s.Event, err = event.New(clientChannelContext)
-	if err != nil {
-		return errors.WithMessage(err, "failed to create new event client")
-	}
-	fmt.Println("Event client created")
+    client, err := channel.New(clientContext)
+    if err != nil {
+        return nil, fmt.Errorf("failed to create new channel client: %v", err)
+    }
 
-	return nil
+    return client, nil
+}
+
+
+func (s *SetupSDK) CreateEventClient(clientContext context.ChannelProvider, eventID string) (*event.Client, fab.Registration, <-chan *fab.CCEvent, error) {
+
+    event, err := event.New(clientContext)
+    if err != nil {
+        return nil, nil, nil, fmt.Errorf("failed to create new client context: %v", err)
+    }
+    fmt.Println("Event client created")
+
+    // register chaincode event
+    registered, notifier, err := event.RegisterChaincodeEvent("vote", eventID)
+    if err != nil {
+        return nil, nil, nil, errors.WithMessage(err, "failed to register cc event")
+    }
+
+    return event, registered, notifier, nil
 }
 
 func (s *SetupSDK) CloseSDK() {

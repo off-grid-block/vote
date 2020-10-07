@@ -2,8 +2,8 @@ package blockchain
 
 import (
     "fmt"
-    "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/fabsdk"
     "bytes"
     "encoding/gob"
 )
@@ -14,7 +14,13 @@ func QueryVotePrivateDetailsByPollSDK(s *SetupSDK, pollID string) ([]string, err
 
     var cidList []string
 
-    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotePrivateDetailsByPoll",  Args: [][]byte{[]byte(pollID)}})
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return cidList, fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
+    response, err := client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotePrivateDetailsByPoll",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return cidList, fmt.Errorf("failed to query: %v", err)
     }
@@ -32,7 +38,13 @@ func QueryVotePrivateDetailsByPollSDK(s *SetupSDK, pollID string) ([]string, err
 // query votes of a particular poll
 func QueryVotesByPollSDK(s *SetupSDK, pollID string) (string, error) {
 
-    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotesByPoll", Args: [][]byte{[]byte(pollID)}})
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
+    response, err := client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotesByPoll", Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -43,7 +55,13 @@ func QueryVotesByPollSDK(s *SetupSDK, pollID string) (string, error) {
 // query votes of a particular poll
 func QueryVotesByVoterSDK(s *SetupSDK, voterID string) (string, error) {
 
-    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotesByVoter", Args: [][]byte{[]byte(voterID)}})
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
+    response, err := client.Query(channel.Request{ChaincodeID: "vote", Fcn: "queryVotesByVoter", Args: [][]byte{[]byte(voterID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }

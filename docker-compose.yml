@@ -11,9 +11,23 @@ services:
     networks:
       - net_byfn
     volumes:
-      - "~/deon/fabric-samples/first-network/channel-artifacts:/config/channel-artifacts:ro"
-      - "~/deon/fabric-samples/first-network/crypto-config:/config/crypto-config:ro"
+      - type: bind
+        source: ~/deon/fabric-samples/first-network/channel-artifacts
+        target: /config/channel-artifacts
+        read_only: true
+      - type: bind
+        source: ~/deon/fabric-samples/first-network/crypto-config
+        target: /config/crypto-config
+        read_only: true
+      - type: volume
+        source: state-store
+        target: /tmp/state-store
 
 networks:
   net_byfn:
     external: true
+
+volumes:
+  state-store:
+    external:
+      name: core-service_state-store

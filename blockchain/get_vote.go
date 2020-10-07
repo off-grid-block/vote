@@ -2,9 +2,8 @@ package blockchain
 
 import (
     "fmt"
-    "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
-    "reflect"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/fabsdk"
 )
 
 
@@ -15,8 +14,14 @@ func GetVoteSDK(s *SetupSDK, pollID, voterID string) (string, error) {
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)
 
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
 	// create and send request for reading an entry
-    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getVote",  Args: [][]byte{pollIdBytes, voterIdBytes}})
+    response, err := client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getVote",  Args: [][]byte{pollIdBytes, voterIdBytes}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -31,8 +36,14 @@ func GetVotePrivateDetailsSDK(s *SetupSDK, pollID, voterID string) (string, erro
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)
 
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
     // create and send request for reading an entry
-    response, err := s.Client.Query(
+    response, err := client.Query(
         channel.Request{
             ChaincodeID: "vote", 
             Fcn: "getVotePrivateDetails",  
@@ -51,7 +62,13 @@ func GetVotePrivateDetailsHashSDK(s *SetupSDK, pollID, voterID string) (string, 
     pollIdBytes := []byte(pollID)
     voterIdBytes := []byte(voterID)
 
-    response, err := s.Client.Query(
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
+    response, err := client.Query(
         channel.Request{
             ChaincodeID: "vote", 
             Fcn: "getVotePrivateDetailsHash", 
@@ -60,10 +77,6 @@ func GetVotePrivateDetailsHashSDK(s *SetupSDK, pollID, voterID string) (string, 
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
-
-    fmt.Println(reflect.TypeOf(response.Payload))
-    fmt.Println(response.Payload)
-    fmt.Println(string(response.Payload))
     
     return string(response.Payload), nil
 }

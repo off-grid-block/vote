@@ -50,12 +50,6 @@ func main() {
 		return
 	}
 
-	err = fSetup.ClientSetup()
-	if err != nil {
-		fmt.Printf("Failed to set up client: %v\n", err)
-		return
-	}
-
 	// create shell to connect to IPFS
 	sh := ipfs.NewShell(os.Getenv("IPFS_ENDPOINT"))
 

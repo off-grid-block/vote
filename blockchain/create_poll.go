@@ -2,8 +2,8 @@ package blockchain
 
 import (
     "fmt"
-    "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/fabsdk"
     "time"
 )
 
@@ -28,17 +28,24 @@ func InitPollSDK(s *SetupSDK, PollID, Title, PollHash string) (string, error) {
     transientDataMap := make(map[string][]byte)
     transientDataMap["poll"] = []byte(text)
 
-    // register chaincode event
-    registered, notifier, err := s.Event.RegisterChaincodeEvent("vote", eventID)
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+
+    client, err := s.CreateChannelClient(clientContext)
     if err != nil {
-        return "Failed to register chaincode event", err
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
+    // register chaincode event
+    event, registered, notifier, err := s.CreateEventClient(clientContext, eventID)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new event client: %v\n", err)
     }
 
     // unregister chaincode event
-    defer s.Event.Unregister(registered)
+    defer event.Unregister(registered)
 
     // Create a request for vote init and send it
-    response, err := s.Client.Execute(channel.Request{ChaincodeID: "vote", Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
+    response, err := client.Execute(channel.Request{ChaincodeID: "vote", Fcn: "initPoll", Args: [][]byte{}, TransientMap: transientDataMap})
     if err != nil {
         return "", fmt.Errorf("failed to initiate: %v", err)
     }
