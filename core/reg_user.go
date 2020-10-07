@@ -1,9 +1,9 @@
 package core
 
 import (
-	caMsp "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
+	caMsp "github.com/off-grid-block/fabric-sdk-go/pkg/client/msp"
 	"github.com/pkg/errors"
-	//"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+	//"github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
 	"fmt"
 	"github.com/off-grid-block/vote/blockchain"
 )

@@ -2,15 +2,22 @@ package voteapp
 
 import (
     "fmt"
-    "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/fabsdk"
     "github.com/off-grid-block/vote/blockchain"
-    // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    // "github.com/off-grid-block/fabric-sdk-go/pkg/common/providers/fab"
 )
 
 
 func GetPollSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
 
-    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPoll",  Args: [][]byte{[]byte(pollID)}})
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
+    response, err := client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPoll",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
@@ -21,8 +28,14 @@ func GetPollSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
 // read private details of vote using SDK
 func GetPollPrivateDetailsSDK(s *blockchain.SetupSDK, pollID string) (string, error) {
 
+    clientContext := s.Fsdk.ChannelContext(s.ChannelID, fabsdk.WithUser("Voting"))
+    client, err := s.CreateChannelClient(clientContext)
+    if err != nil {
+        return "", fmt.Errorf("failed to create new channel client: %v\n", err)
+    }
+
     // create and send request for reading an entry
-    response, err := s.Client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(pollID)}})
+    response, err := client.Query(channel.Request{ChaincodeID: "vote", Fcn: "getPollPrivateDetails",  Args: [][]byte{[]byte(pollID)}})
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }

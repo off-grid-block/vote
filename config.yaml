@@ -268,8 +268,8 @@ organizations:
     # runtime network. Fabric-CA is a special certificate authority that provides a REST APIs for
     # dynamic certificate management (enroll, revoke, re-enroll). The following section is only for
     # Fabric-CA servers.
-    # certificateAuthorities:
-    #   - ca.org1.example.com
+    certificateAuthorities:
+      - ca.org1.example.com
 
   # the profile will contain public information about organizations other than the one it belongs to.
   # These are necessary information to make transaction lifecycles work, including MSP IDs and
@@ -416,30 +416,32 @@ peers:
 # certificate management to be done via REST APIs. Application may choose to use a standard
 # Certificate Authority instead of Fabric-CA, in which case this section would not be specified.
 #
-# certificateAuthorities:
-#   ca.org1.example.com:
-#     # [Optional] Default: Infer from hostname
-#     url: https://ca.org1.example.com:7054
-#     tlsCACerts:
-#       # Comma-Separated list of paths
-#       path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
-#       #path: first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
-#       # Client key and cert for SSL handshake with Fabric CA
-#       client:
-#         key:
-#           path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
-#           #path: first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
-#         cert:
-#           path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
-#           #path: first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
+certificateAuthorities:
+  ca.org1.example.com:
+    # [Optional] Default: Infer from hostname
+    url: https://ca.org1.example.com:7054
+    tlsCACerts:
+      # Comma-Separated list of paths
+      path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+      #path: first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      # Client key and cert for SSL handshake with Fabric CA
+      # client:
+      #   key:
+      #     path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
+      #     #path: first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.key
+      #   cert:
+      #     path: /Users/brianli/deon/fabric-samples/first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
+      #     #path: first-network/crypto-config/peerOrganizations/tls.example.com/users/User1@tls.example.com/tls/client.crt
 
-#     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
-#     # needed to enroll and invoke new users.
-#     registrar:
-#       enrollId: admin
-#       enrollSecret: adminpw
-#     # [Optional] The optional name of the CA.
-#     caName: ca.org1.example.com
+    # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
+    # needed to enroll and invoke new users.
+    httpOptions:
+      verify: false
+    registrar:
+      enrollId: admin
+      enrollSecret: adminpw
+    # [Optional] The optional name of the CA.
+    caName: ca.org1.example.com
 #   ca.org2.example.com:
 #     url: https://ca.org2.example.com:8054
 #     tlsCACerts:

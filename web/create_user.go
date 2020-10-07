@@ -8,7 +8,7 @@ import (
 
 	"github.com/off-grid-block/vote/core"
 
-	caMsp "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
+	caMsp "github.com/off-grid-block/fabric-sdk-go/pkg/client/msp"
 )
 
 func (app *Application) userHandler(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +36,7 @@ func (app *Application) userHandler(w http.ResponseWriter, r *http.Request) {
 				ECert: true,
 			},
 		},
-		CAName: "ca.org1.hf.sample.io",
+		CAName: "ca.org1.example.com",
 	}
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&data)

@@ -2,8 +2,8 @@ package voteapp
 
 import (
     "fmt"
-    "github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
-    // "github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+    "github.com/off-grid-block/fabric-sdk-go/pkg/client/channel"
+    // "github.com/off-grid-block/fabric-sdk-go/pkg/common/providers/fab"
     "github.com/off-grid-block/vote/blockchain"
     "reflect"
 )
