@@ -9,7 +9,7 @@ services:
     ports:
       - "8002:8002"
     networks:
-      - net_byfn
+      - net_deon
     volumes:
       - type: bind
         source: ~/deon/fabric-samples/first-network/channel-artifacts
@@ -24,7 +24,7 @@ services:
         target: /tmp/state-store
 
 networks:
-  net_byfn:
+  net_deon:
     external: true
 
 volumes:
