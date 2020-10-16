@@ -1,4 +1,3 @@
-***This repository is a work in progress.***
 
 # DEON Service - Vote
 This is the repository for the example voting application for the DEON platform. DEON Service Vote allows users to dynamically create polls and submit votes for user-defined polls.
@@ -62,4 +61,13 @@ Next, we will register the DEON vote application with the identity management ag
 Now we can initialize a poll! Send a post request to http://localhost:8000/api/v1/poll with the following body: `{"PollID": "1", "Title": "My first poll", "Content": {"First choice": "DEON is good", "Second choice": "DEON is great", "Third choice": "DEON is amazing"}}`
 
 ### Summary
+
+You can bring down the demo with the following commands:
+1. ```./manage down``` inside ```von-network``` directory
+2. ```./cyfn.sh down``` inside ```off-grid-net``` directory
+3. ```docker volume prune```
+4. ```docker-compose -f docker-compose-demo.yml down```
+5. ```docker-compose -f docker-compose-demo.yml rm -f```
+
+
 You've now created a poll and pushed it to the Fabric network. For more information on what else you can do with the vote service, check out the API documentation at https://app.swaggerhub.com/apis/haniavis/deon-core/0.1.0.

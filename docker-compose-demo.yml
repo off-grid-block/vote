@@ -2,19 +2,19 @@ version: "3.3"
 
 services:
 
-  proxy_api:
-    image: deonproject/proxy-api:latest
-    container_name: api.example.com
-    build: ./proxy
-    ports:
-      - "8000:8000"
-    networks:
-      - net_deon
+  # proxy_api:
+  #   image: deonproject/proxy-api:latest
+  #   container_name: api.example.com
+  #   build: ./proxy
+  #   ports:
+  #     - "8000:8000"
+  #   networks:
+  #     - net_deon
 
   deon:
     image: deonproject/core-service:latest
     container_name: deon.example.com
-    build: ./core-service
+    # build: ./core-service
     ports:
       - "8001:8001"
     networks:
@@ -39,7 +39,7 @@ services:
   vote:
     image: deonproject/vote:latest
     container_name: vote.example.com
-    build: ./vote
+    # build: ./vote
     ports:
       - "8002:8002"
     networks:
@@ -62,9 +62,9 @@ services:
   ci_msp:
     image: deonproject/faber-alice-demo:latest
     container_name: ci_msp.example.com
-    build: 
-      context: ./aca-py-controllers
-      dockerfile: ./docker/Dockerfile.demo
+    # build: 
+    #   context: ./aca-py-controllers
+    #   dockerfile: ./docker/Dockerfile.demo
     ports:
       - "7990-7999:7990-7999"
     environment:
@@ -77,9 +77,9 @@ services:
   client:
     image: deonproject/faber-alice-demo:latest
     container_name: client.example.com
-    build: 
-      context: ./aca-py-controllers
-      dockerfile: ./docker/Dockerfile.demo
+    # build: 
+    #   context: ./aca-py-controllers
+    #   dockerfile: ./docker/Dockerfile.demo
     ports:
       - "8010-8020:8010-8020"
     environment:
@@ -92,8 +92,8 @@ services:
   ci_msp_ui:
     image: deonproject/ci-msp-ui:latest
     container_name: ci-msp-ui
-    build:
-      context: ./admin/ci_admin_ui
+    # build:
+    #   context: ./admin/ci_admin_ui
     ports:
       - "4200:4200"
     depends_on:
@@ -102,8 +102,8 @@ services:
   client_ui:
     image: deonproject/client-ui:latest
     container_name: client-ui
-    build:
-      context: ./admin/client
+    # build:
+    #   context: ./admin/client
     ports:
       - "4201:4201"
     depends_on:
