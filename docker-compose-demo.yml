@@ -1,0 +1,130 @@
+version: "3.3"
+
+services:
+
+  proxy_api:
+    image: deonproject/proxy-api:latest
+    container_name: api.example.com
+    build: ./proxy
+    ports:
+      - "8000:8000"
+    networks:
+      - net_deon
+
+  deon:
+    image: deonproject/core-service:latest
+    container_name: deon.example.com
+    build: ./core-service
+    ports:
+      - "8001:8001"
+    networks:
+      - net_deon
+    volumes:
+      - type: bind
+        source: ~/deon/fabric-samples/first-network/channel-artifacts
+        target: /config/channel-artifacts
+        read_only: true
+      - type: bind
+        source: ~/deon/fabric-samples/first-network/crypto-config
+        target: /config/crypto-config
+        read_only: true
+      - type: volume
+        source: state-store
+        target: /tmp/state-store
+    depends_on:
+      - ipfs
+      - ci_msp
+      - client
+
+  vote:
+    image: deonproject/vote:latest
+    container_name: vote.example.com
+    build: ./vote
+    ports:
+      - "8002:8002"
+    networks:
+      - net_deon
+    volumes:
+      - type: bind
+        source: ~/deon/fabric-samples/first-network/channel-artifacts
+        target: /config/channel-artifacts
+        read_only: true
+      - type: bind
+        source: ~/deon/fabric-samples/first-network/crypto-config
+        target: /config/crypto-config
+        read_only: true
+      - type: volume
+        source: state-store
+        target: /tmp/state-store
+    depends_on:
+      - deon
+
+  ci_msp:
+    image: deonproject/faber-alice-demo:latest
+    container_name: ci_msp.example.com
+    build: 
+      context: ./aca-py-controllers
+      dockerfile: ./docker/Dockerfile.demo
+    ports:
+      - "7990-7999:7990-7999"
+    environment:
+      - DOCKERHOST=${DOCKERHOST}
+      - RUNMODE=docker
+    networks:
+      - net_deon
+    command: ci_msp --port 7990
+
+  client:
+    image: deonproject/faber-alice-demo:latest
+    container_name: client.example.com
+    build: 
+      context: ./aca-py-controllers
+      dockerfile: ./docker/Dockerfile.demo
+    ports:
+      - "8010-8020:8010-8020"
+    environment:
+      - DOCKERHOST=${DOCKERHOST}
+      - RUNMODE=docker
+    networks:
+      - net_deon
+    command: client --port 8010 --container client.example.com
+
+  ci_msp_ui:
+    image: deonproject/ci-msp-ui:latest
+    container_name: ci-msp-ui
+    build:
+      context: ./admin/ci_admin_ui
+    ports:
+      - "4200:4200"
+    depends_on:
+      - ci_msp
+
+  client_ui:
+    image: deonproject/client-ui:latest
+    container_name: client-ui
+    build:
+      context: ./admin/client
+    ports:
+      - "4201:4201"
+    depends_on:
+      - client
+
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    container_name: ipfs.node.example.com
+    ports:
+      - "8080:8080"
+      - "4001:4001"
+      - "5001:5001"
+    volumes:
+      - "/tmp/ipfs-docker-staging:/export"
+      - "/tmp/ipfs-docker-data:/data/ipfs"
+    networks:
+      - net_deon
+
+networks:
+  net_deon:
+    external: true
+
+volumes:
+  state-store:
