@@ -65,9 +65,9 @@ Now we can initialize a poll! Send a post request to http://localhost:8000/api/v
 You can bring down the demo with the following commands:
 1. ```./manage down``` inside ```von-network``` directory
 2. ```./cyfn.sh down``` inside ```off-grid-net``` directory
-3. ```docker volume prune```
-4. ```docker-compose -f docker-compose-demo.yml down```
-5. ```docker-compose -f docker-compose-demo.yml rm -f```
+3. ```docker-compose -f docker-compose-demo.yml down```
+4. ```docker-compose -f docker-compose-demo.yml rm -f```
+5. ```docker volume prune```
 
 
 You've now created a poll and pushed it to the Fabric network. For more information on what else you can do with the vote service, check out the API documentation at https://app.swaggerhub.com/apis/haniavis/deon-core/0.1.0.

@@ -2,37 +2,12 @@ version: "3.3"
 
 services:
 
-  deon:
-    image: deonproject/core-service:latest
-    container_name: deon.example.com
-    # build: ./core-service
-    ports:
-      - "8000:8000"
-    networks:
-      - net_deon
-    volumes:
-      - type: bind
-        source: ~/deon/fabric-samples/first-network/channel-artifacts
-        target: /config/channel-artifacts
-        read_only: true
-      - type: bind
-        source: ~/deon/fabric-samples/first-network/crypto-config
-        target: /config/crypto-config
-        read_only: true
-      - type: volume
-        source: state-store
-        target: /tmp/state-store
-    depends_on:
-      - ipfs
-      - ci_msp
-      - client
-
   vote:
     image: deonproject/vote:latest
     container_name: vote.example.com
     # build: ./vote
     ports:
-      - "8001:8001"
+      - "8002:8002"
     networks:
       - net_deon
     volumes:
@@ -47,8 +22,6 @@ services:
       - type: volume
         source: state-store
         target: /tmp/state-store
-    depends_on:
-      - deon
 
   ci_msp:
     image: deonproject/faber-alice-demo:latest
@@ -80,25 +53,25 @@ services:
       - net_deon
     command: client --port 8010 --container client.example.com
 
-  # ci_msp_ui:
-  #   image: deonproject/ci-msp-ui:latest
-  #   container_name: ci-msp-ui
-  #   # build:
-  #   #   context: ./admin/ci_admin_ui
-  #   ports:
-  #     - "4200:4200"
-  #   depends_on:
-  #     - ci_msp
+  ci_msp_ui:
+    image: deonproject/ci-msp-ui:latest
+    container_name: ci-msp-ui
+    # build:
+    #   context: ./admin/ci_admin_ui
+    ports:
+      - "4200:4200"
+    depends_on:
+      - ci_msp
 
-  # client_ui:
-  #   image: deonproject/client-ui:latest
-  #   container_name: client-ui
-  #   # build:
-  #   #   context: ./admin/client
-  #   ports:
-  #     - "4201:4201"
-  #   depends_on:
-  #     - client
+  client_ui:
+    image: deonproject/client-ui:latest
+    container_name: client-ui
+    # build:
+    #   context: ./admin/client
+    ports:
+      - "4201:4201"
+    depends_on:
+      - client
 
   ipfs:
     image: ipfs/go-ipfs:latest
