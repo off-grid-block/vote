@@ -102,7 +102,7 @@ func Serve(app *Application) {
 	/*********************************/
 	/*	subrouter for "poll" prefix  */
 	/*********************************/
-	poll := api.PathPrefix("/poll").Subrouter()
+	poll := api.PathPrefix("/vote-app/poll").Subrouter()
 
 	// handler for initPoll
 	poll.HandleFunc("", app.initPollHandler).Methods("POST")
@@ -122,7 +122,7 @@ func Serve(app *Application) {
 	/*********************************/
 	/*	subrouter for "vote" prefix  */
 	/*********************************/
-	vote := api.PathPrefix("/vote").Subrouter()
+	vote := api.PathPrefix("/vote-app/vote").Subrouter()
 
 	// handler for initVote
 	vote.HandleFunc("", app.initVoteHandler).Methods("POST")

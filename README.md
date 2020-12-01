@@ -30,7 +30,7 @@ The DEON services rely on VON Network, an implementation of a development level 
 The DEON services are dependent on a number of different components developed by the Yale Institute for Network Science. To bring up all necessary nodes:
 1. Download  ```docker-compose-demo.yml``` from this repository.
 2. Run ```export DOCKERHOST=`docker run --rm --net=host eclipse/che-ip````
-3. Run ```docker-compose up -f docker-compose-demo.yml```
+3. Run ```docker-compose -f docker-compose-demo.yml up```
 
 The docker-compose file will bring up:
  - the API exposing the endpoints services, hosted at http://localhost:8000/
@@ -62,7 +62,7 @@ Now we can initialize a poll! Send a post request to http://localhost:8000/api/v
 
 ### Summary
 
-You can bring down the demo with the following commands:
+You can bring down the demo with the fo llowing commands:
 1. ```./manage down``` inside ```von-network``` directory
 2. ```./cyfn.sh down``` inside ```off-grid-net``` directory
 3. ```docker-compose -f docker-compose-demo.yml down```
