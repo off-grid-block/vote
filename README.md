@@ -37,28 +37,36 @@ The docker-compose file will bring up:
 -  the DEON vote service, using the code in this repository
  - the DEON core-service (github.com/off-grid-block/core-service)
  - a reverse proxy server to redirect requests to the correct component
- - the CI/MSP Aries Cloud Agent
+ - the Admin Aries Cloud Agent
  - the Client Aries Cloud Agent
  - UIs to send instructions to & interact with both agents
 
 ## Test the demo
 
 To test the demo, the first step is establishing a connection between the client and CI/MSP Aries Cloud Agents and creating a verifiable credential.
-1. Access the client agent hosted at http://localhost:4201
-2. Click the button labeled "Get invitation from Issuer agent"
-3. Navigate to the CI/MSP agent at http://localhost:4200
-4. On the sidebar, select "Schema and Credential definition" and create a schema with attributes "app_name, app_id" (name the schema whatever you like)
-5. On the credential tab, issue a credential to the client agent.
-
-### Register DEON services
-Next, we will register the DEON vote application with the identity management agents. Send a POST request to http://localhost:8000/api/v1/register with the following body: `{
-"Name": "Voting",
-"Secret": "kerapwd",
-"Type": "user"
-}`
+1. Create a controller for the client agent by sending a POST request to `localhost:8000/api/v1/admin/agent` with the following body:
+    ```
+    {
+        "alias": "client",
+        "agent_url": "http://client.example.com:8031",
+    	"name": "Voting",
+    	"secret": "kerapwd",
+    	"type": "user"
+    }
+    ```
+    This endpoint will create a signing DID & verkey pair for the application and store that information inside the client agent and VON Network ledger.
+2. Using the ID returned in the previous POST request, send another POST request to `localhost:8000/api/v1/admin/agent/{client_agent_id}/connect` to establish a connection between the client and admin agents.
+3. Register a public DID for the admin agent on the VON Network ledger by sending a POST request to `localhost:8000/api/v1/admin/agent/1/register-ledger`. (No need to repeat this process for the client agent; a public DID was automatically registered when you created the controller in step 1)
+4. Issue a credeential by sending a POST to `http://localhost:8000/api/v1/admin/agent/{client_agent_id}/issue-credential` with the following body:
+    ```
+    {
+        "app_name": "voter",
+        "app_id": "101"
+    }
+    ```
 
 ### Create your first poll
-Now we can initialize a poll! Send a post request to http://localhost:8000/api/v1/poll with the following body: `{"PollID": "1", "Title": "My first poll", "Content": {"First choice": "DEON is good", "Second choice": "DEON is great", "Third choice": "DEON is amazing"}}`
+Now we can initialize a poll! Send a post request to http://localhost:8000/api/v1/vote-app/poll with the following body: `{"PollID": "1", "Title": "My first poll", "Content": {"First choice": "DEON is good", "Second choice": "DEON is great", "Third choice": "DEON is amazing"}}`
 
 ### Summary
 
@@ -70,4 +78,4 @@ You can bring down the demo with the fo llowing commands:
 5. ```docker volume prune```
 
 
-You've now created a poll and pushed it to the Fabric network. For more information on what else you can do with the vote service, check out the API documentation at https://app.swaggerhub.com/apis/haniavis/deon-core/0.1.0.
+You've now created a poll and pushed it to the Fabric network. For more information on what else you can do with the vote service, check out the API documentation at https://app.swaggerhub.com/apis/haniavis/deon-core/0.3.0.

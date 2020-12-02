@@ -24,6 +24,8 @@ services:
         target: /tmp/state-store
     depends_on:
       - ipfs
+      - admin
+      - client
 
   vote:
     image: deonproject/vote:latest
@@ -42,67 +44,68 @@ services:
         source: ~/deon/fabric-samples/first-network/crypto-config
         target: /config/crypto-config
         read_only: true
+      - type: bind
+        source: ~/deon/fabric-sdk-go
+        target: /deon/fabric-sdk-go
+        read_only: true
       - type: volume
         source: state-store
         target: /tmp/state-store
     depends_on:
       - deon
 
+  admin:
+    image: deonproject/aries-cloudagent-run:latest
+    container_name: admin.example.com
+    ports:
+      - "8020-8027:8020-8027"
+    networks:
+      - net_deon
+    command: >
+      start 
+      --endpoint http://${DOCKERHOST}:8020 
+      --label admin 
+      --auto-ping-connection 
+      --auto-respond-messages 
+      --auto-store-credential 
+      --auto-accept-invites 
+      --auto-accept-requests 
+      --auto-verify-presentation 
+      --inbound-transport http 0.0.0.0 8020 
+      --outbound-transport http 
+      --admin 0.0.0.0 8021 
+      --admin-insecure-mode 
+      --genesis-url http://${DOCKERHOST}:9000/genesis 
+      --wallet-type indy 
+      --wallet-name admin001 
+      --wallet-key admin001 
 
-admin:
-  image: deonproject/aries-cloudagent-run:latest
-  container_name: admin.example.com
-  ports:
-    - "8020-8027:8020-8027"
-  networks:
-    - net_deon
-  command: >-
-    start 
-    --endpoint http://host.docker.internal:8020 
-    --label admin 
-    --auto-ping-connection 
-    --auto-respond-messages 
-    --auto-store-credential 
-    --auto-accept-invites 
-    --auto-accept-requests 
-    --auto-verify-presentation 
-    --inbound-transport http 0.0.0.0 8020 
-    --outbound-transport http 
-    --admin 0.0.0.0 8021 
-    --admin-insecure-mode 
-    --genesis-url http://host.docker.internal:9000/genesis 
-    --wallet-type indy 
-    --wallet-name admin001 
-    --wallet-key admin001 
-    --webhook-url http://host.docker.internal:8022
-
-client:
-  image: deonproject/aries-cloudagent-run:latest
-  container_name: client.example.com
-  ports:
-    - "8030-8037:8030-8037"
-  networks:
-    - net_deon
-  command: >-
-    start 
-    --endpoint http://host.docker.internal:8030 
-    --label client 
-    --auto-ping-connection 
-    --auto-respond-messages 
-    --auto-store-credential 
-    --auto-accept-invites 
-    --auto-accept-requests 
-    --auto-respond-credential-offer
-    --auto-respond-presentation-request 
-    --inbound-transport http 0.0.0.0 8030 
-    --outbound-transport http 
-    --admin 0.0.0.0 8031 
-    --admin-insecure-mode 
-    --genesis-url http://host.docker.internal:9000/genesis 
-    --wallet-type indy 
-    --wallet-name client001 
-    --wallet-key client001 
-    --webhook-url http://host.docker.internal:8032
+  client:
+    image: deonproject/aries-cloudagent-run:latest
+    container_name: client.example.com
+    ports:
+      - "8030-8037:8030-8037"
+    networks:
+      - net_deon
+    command: >
+      start 
+      --endpoint http://${DOCKERHOST}:8030 
+      --label client 
+      --auto-ping-connection 
+      --auto-respond-messages 
+      --auto-store-credential 
+      --auto-accept-invites 
+      --auto-accept-requests 
+      --auto-respond-credential-offer
+      --auto-respond-presentation-request 
+      --inbound-transport http 0.0.0.0 8030 
+      --outbound-transport http 
+      --admin 0.0.0.0 8031 
+      --admin-insecure-mode 
+      --genesis-url http://${DOCKERHOST}:9000/genesis 
+      --wallet-type indy 
+      --wallet-name client001 
+      --wallet-key client001 
 
   ipfs:
     image: ipfs/go-ipfs:latest
