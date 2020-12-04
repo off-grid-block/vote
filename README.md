@@ -39,14 +39,20 @@ The docker-compose file will bring up:
  - a reverse proxy server to redirect requests to the correct component
  - the Admin Aries Cloud Agent
  - the Client Aries Cloud Agent
- - UIs to send instructions to & interact with both agents
 
 ## Test the demo
 
 To test the demo, the first step is establishing a connection between the client and CI/MSP Aries Cloud Agents and creating a verifiable credential.
-1. Create a controller for the client agent by sending a POST request to `localhost:8000/api/v1/admin/agent` with the following body:
+1. Create a controller for the admin agent by sending a POST request to `localhost:8000/api/v1/admin/agent` with the following body:
     ```
     {
+        "agent_type": "admin"
+    }
+    ```
+2. Create a controller for the client agent by sending a POST request to `localhost:8000/api/v1/admin/agent` with the following body:
+    ```
+    {
+        "agent_type": "client",
         "alias": "client",
         "agent_url": "http://client.example.com:8031",
     	"name": "Voting",
@@ -55,8 +61,7 @@ To test the demo, the first step is establishing a connection between the client
     }
     ```
     This endpoint will create a signing DID & verkey pair for the application and store that information inside the client agent and VON Network ledger.
-2. Using the ID returned in the previous POST request, send another POST request to `localhost:8000/api/v1/admin/agent/{client_agent_id}/connect` to establish a connection between the client and admin agents.
-3. Register a public DID for the admin agent on the VON Network ledger by sending a POST request to `localhost:8000/api/v1/admin/agent/1/register-ledger`. (No need to repeat this process for the client agent; a public DID was automatically registered when you created the controller in step 1)
+3. Using the ID returned in the previous POST request, send another POST request to `localhost:8000/api/v1/admin/agent/{client_agent_id}/connect` to establish a connection between the client and admin agents.
 4. Issue a credeential by sending a POST to `http://localhost:8000/api/v1/admin/agent/{client_agent_id}/issue-credential` with the following body:
     ```
     {

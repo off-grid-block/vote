@@ -5,7 +5,10 @@ services:
   deon:
     image: deonproject/core-service:latest
     container_name: deon.example.com
-    build: ../core-service
+    build: 
+      context: ../core-service
+      args:
+        ledger_url: http://${DOCKERHOST}:9000
     ports:
       - "8000:8000"
     networks:
@@ -22,6 +25,7 @@ services:
       - type: volume
         source: state-store
         target: /tmp/state-store
+    command: /bin/start http://${DOCKERHOST}:9000
     depends_on:
       - ipfs
       - admin
