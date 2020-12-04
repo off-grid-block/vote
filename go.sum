@@ -116,6 +116,7 @@ github.com/off-grid-block/controller v0.0.0-20201126214442-cd74abc6c44c h1:P5K14
 github.com/off-grid-block/controller v0.0.0-20201126214442-cd74abc6c44c/go.mod h1:SQDdtmh9HTXMKldJlMcjEgn3rfuetjcFmABYLqXOauE=
 github.com/off-grid-block/controller v0.0.0-20201201202119-bc6f411bb654 h1:Yxq/mSm/ft+bZm80W8n+XSWzTouQRMkCpWJBKeOHU0Q=
 github.com/off-grid-block/controller v0.0.0-20201201202119-bc6f411bb654/go.mod h1:SQDdtmh9HTXMKldJlMcjEgn3rfuetjcFmABYLqXOauE=
+github.com/off-grid-block/controller v0.0.0-20201204201447-2bec1c305363/go.mod h1:SQDdtmh9HTXMKldJlMcjEgn3rfuetjcFmABYLqXOauE=
 github.com/off-grid-block/fabric-protos-go v0.0.0-20200929182751-c59fe09a026b h1:rauBOa0/sIUt9MBr2/mrpc/8mj5HkENkSPJGypFZkDc=
 github.com/off-grid-block/fabric-protos-go v0.0.0-20200929182751-c59fe09a026b/go.mod h1:3v3u/cK7uRltroeV0BibcaZEYqhALVeQ0W5iZxNfcB8=
 github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201126215226-ce0a4e69602e/go.mod h1:jhHKtV2PeM3CRLUnBw6TraApB/MKkWx4GslkQPAD/Bw=
@@ -125,6 +126,8 @@ github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201130230342-5a19bdf11b
 github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201130230342-5a19bdf11be2/go.mod h1:jhHKtV2PeM3CRLUnBw6TraApB/MKkWx4GslkQPAD/Bw=
 github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201201213140-3b5bbbd16310 h1:PNlK8hOLbrBGYxEFjPTp9ssGIqrjKJLdmGqztATO8Oo=
 github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201201213140-3b5bbbd16310/go.mod h1:Z+mPq9PyQjTXYt3ZrA/52YyzxEpAX32Ty2TryBAJMpo=
+github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201204202603-24f181b6ce1f h1:PhtCWloHqcyGOXj0FoDnXh8DafcKYPIfKNK2eWDLDyA=
+github.com/off-grid-block/fabric-sdk-go v1.0.0-beta1.0.20201204202603-24f181b6ce1f/go.mod h1:+EpVKLeTfxN9tlHVRJENewCfq8It/bQEvdcdwK1mo+Q=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.7.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/gomega v1.4.2/go.mod h1:ex+gbHU/CVuBBDIJjb2X0qEXbFg53c61hWP/1CpauHY=
