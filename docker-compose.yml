@@ -26,9 +26,6 @@ services:
   ci_msp:
     image: deonproject/faber-alice-demo:latest
     container_name: ci_msp.example.com
-    # build: 
-    #   context: ./aca-py-controllers
-    #   dockerfile: ./docker/Dockerfile.demo
     ports:
       - "7990-7999:7990-7999"
     environment:
@@ -41,9 +38,6 @@ services:
   client:
     image: deonproject/faber-alice-demo:latest
     container_name: client.example.com
-    # build: 
-    #   context: ./aca-py-controllers
-    #   dockerfile: ./docker/Dockerfile.demo
     ports:
       - "8010-8020:8010-8020"
     environment:

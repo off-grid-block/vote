@@ -1,14 +1,15 @@
 package web
 
 import (
-	"github.com/off-grid-block/vote/blockchain"
-	"net/http"
-	"log"
+	"encoding/json"
 	"fmt"
-	"time"
-	"os"
 	"github.com/gorilla/mux"
 	ipfs "github.com/ipfs/go-ipfs-api"
+	"github.com/off-grid-block/vote/blockchain"
+	"log"
+	"net/http"
+	"os"
+	"time"
 )
 
 // Struct containing Fabric SDK setup data. Objects of type
@@ -86,6 +87,48 @@ type pollPrivateDetailsResponseSDK struct {
 	PollHash 		string 		`json:"pollHash"`
 }
 
+type checkAgentResponse struct {
+	Initialized bool `json:"initialized"`
+}
+
+func checkAgentMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+
+		req, err := http.NewRequest("GET", os.Getenv("CORE_URL") + "/admin/agent", nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		q := req.URL.Query()
+		q.Add("alias", "vote")
+		req.URL.RawQuery = q.Encode()
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer resp.Body.Close()
+
+		var response checkAgentResponse
+		err = json.NewDecoder(resp.Body).Decode(&response)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if !response.Initialized {
+			http.Error(w, "agent has not yet been initialized", http.StatusBadRequest)
+		} else {
+			fmt.Println("Agent is online. Passing on request to SDK...")
+			next.ServeHTTP(w, r)
+		}
+	})
+}
+
+
 // Homepage
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Homepage\n"))
@@ -93,7 +136,11 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Initiate the web server
 func Serve(app *Application) {
+
+	// create new router and register middlewares
 	r := mux.NewRouter()
+	r.Use(checkAgentMiddleware)
+
 	api := r.PathPrefix("/api/v1").Subrouter()
 
 	// test api homepage

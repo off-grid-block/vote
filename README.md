@@ -62,7 +62,7 @@ To test the demo, the first step is establishing a connection between the client
     ```
     This endpoint will create a signing DID & verkey pair for the application and store that information inside the client agent and VON Network ledger.
 3. Using the ID returned in the previous POST request, send another POST request to `localhost:8000/api/v1/admin/agent/{client_agent_id}/connect` to establish a connection between the client and admin agents.
-4. Issue a credeential by sending a POST to `http://localhost:8000/api/v1/admin/agent/{client_agent_id}/issue-credential` with the following body:
+4. Issue a credential by sending a POST to `http://localhost:8000/api/v1/admin/agent/{client_agent_id}/issue-credential` with the following body:
     ```
     {
         "app_name": "voter",
