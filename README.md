@@ -32,7 +32,7 @@ Add the net_deon network in the ```docker-compose.yml``` file or just download t
 ### DEON Services
 The DEON services are dependent on a number of different components developed by the Yale Institute for Network Science. To bring up all necessary nodes:
 1. Download  ```docker-compose-demo.yml``` from this repository.
-2. Run ```export DOCKERHOST=`docker run --rm --net=host eclipse/che-ip````
+2. Run ```export DOCKERHOST=`docker run --rm --net=host eclipse/che-ip` ```
 3. Run ```docker-compose -f docker-compose-demo.yml up```
 
 The docker-compose file will bring up:
