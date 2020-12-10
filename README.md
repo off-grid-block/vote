@@ -65,7 +65,7 @@ To test the demo, the first step is establishing a connection between the Client
     ```
     This request will create a signing DID & verkey pair for the application and store that information inside the Client agent's wallet and the VON Network ledger.
 3. Using the ID returned in the previous POST request, send another POST request to `localhost:8000/api/v1/admin/agent/{client_agent_id}/connect` to establish a connection between the Client and Admin agents.
-4. Issue a credential by sending a POST to `http://localhost:8000/api/v1/admin/agent/{client_agent_id}/issue-credential` with the following body:
+4. Issue a DEON credential to the Client agent by sending a POST to `http://localhost:8000/api/v1/admin/agent/{client_agent_id}/issue-credential` with the following body:
     ```
     {
         "app_name": "voting",
