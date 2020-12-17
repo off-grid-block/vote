@@ -11,11 +11,11 @@ services:
       - net_deon
     volumes:
       - type: bind
-        source: ../off-grid-net/channel-artifacts
+        source: ../../off-grid-net/channel-artifacts
         target: /config/channel-artifacts
         read_only: true
       - type: bind
-        source: ../off-grid-net/crypto-config
+        source: ../../off-grid-net/crypto-config
         target: /config/crypto-config
         read_only: true
       - type: volume
@@ -36,11 +36,11 @@ services:
       - net_deon
     volumes:
       - type: bind
-        source: ../off-grid-net/channel-artifacts
+        source: ../../off-grid-net/channel-artifacts
         target: /config/channel-artifacts
         read_only: true
       - type: bind
-        source: ../off-grid-net/crypto-config
+        source: ../../off-grid-net/crypto-config
         target: /config/crypto-config
         read_only: true
       - type: bind
