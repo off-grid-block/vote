@@ -5,21 +5,17 @@ services:
   deon:
     image: deonproject/core-service:latest
     container_name: deon.example.com
-    build: 
-      context: ../core-service
-      args:
-        ledger_url: http://${DOCKERHOST}:9000
     ports:
       - "8000:8000"
     networks:
       - net_deon
     volumes:
       - type: bind
-        source: ~/deon/fabric-samples/first-network/channel-artifacts
+        source: ../off-grid-net/channel-artifacts
         target: /config/channel-artifacts
         read_only: true
       - type: bind
-        source: ~/deon/fabric-samples/first-network/crypto-config
+        source: ../off-grid-net/crypto-config
         target: /config/crypto-config
         read_only: true
       - type: volume
@@ -34,18 +30,17 @@ services:
   vote:
     image: deonproject/vote:latest
     container_name: vote.example.com
-    build: .
     ports:
       - "8001:8001"
     networks:
       - net_deon
     volumes:
       - type: bind
-        source: ~/deon/fabric-samples/first-network/channel-artifacts
+        source: ../off-grid-net/channel-artifacts
         target: /config/channel-artifacts
         read_only: true
       - type: bind
-        source: ~/deon/fabric-samples/first-network/crypto-config
+        source: ../off-grid-net/crypto-config
         target: /config/crypto-config
         read_only: true
       - type: bind

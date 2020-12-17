@@ -7,31 +7,30 @@ This is the repository for the example voting application for the DEON platform.
 ### Prerequisites
 
 Docker Desktop (2.2.0.0)
+Create a folder (e.g. deon/) to store all the code.
+```mkdir deon && cd deon```
 
 ### Fabric Network
 The DEON services are dependent on our modified version of Hyperledger Fabric. Use the DEON example Fabric network scripts located in the ```off-grid-block/off-grid-net``` repository. 
 
 To clone the repository:
-```git clone https://github.com/off-grid-block/off-grid-net.git```
+```git clone https://github.com/off-grid-block/off-grid-net.git && cd off-grid-net/```
 
-To bring up the network, run:
+To bring up the Fabric network, run:
 ```./cyfn.sh up -s couchdb -c mychannel```
 
 These scripts will automatically pull the correct DEON Docker images needed to bring up the Fabric network. 
 
-### VON Network (Indy)
-The DEON services rely on VON Network, an implementation of a development level Indy Node network, developed by BCGov. For more information on the project and for additional instructions, see their [github repository](https://github.com/bcgov/von-network).
+### Indy Ledger (VON Network)
+The DEON services rely on an Indy ledger. For demonstration purposes we use the VON Network, an implementation of a development level Indy Node network, developed by BCGov. For more information on the project and for additional instructions, see their [github repository](https://github.com/bcgov/von-network).
 
-1. clone the repository: ```git clone https://github.com/bcgov/von-network.git```
-
-Add the net_deon network in the ```docker-compose.yml``` file or just download the modified file here.
-
+1. clone the repository inside the parent deon/ folder: ```git clone https://github.com/bcgov/von-network.git && cd von-network/```
 2. Generate the Docker images: ```./manage build```
 3. Start up the network: ```./manage start```
 
 ### DEON Services
 The DEON services are dependent on a number of different components developed by the Yale Institute for Network Science. To bring up all necessary nodes:
-1. Download  ```docker-compose-demo.yml``` from this repository.
+1. Clone this repository or just download the ```docker-compose-demo.yml``` file inside the parent deon/ folder.
 2. Run ```export DOCKERHOST=`docker run --rm --net=host eclipse/che-ip` ```
 3. Run ```docker-compose -f docker-compose-demo.yml up```
 
