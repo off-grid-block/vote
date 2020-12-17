@@ -122,7 +122,7 @@ func checkAgentMiddleware(next http.Handler) http.Handler {
 		if !response.Initialized {
 			http.Error(w, "agent has not yet been initialized", http.StatusBadRequest)
 		} else {
-			fmt.Println("Agent is online. Passing on request to SDK...")
+			fmt.Println("Agent is online. Passing on request to agent...")
 			next.ServeHTTP(w, r)
 		}
 	})

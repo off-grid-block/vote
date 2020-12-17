@@ -19,6 +19,7 @@ func GetPollSDK(s *SetupSDK, pollID string) (string, error) {
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
+    fmt.Println("Fabric transaction created")
 
     return string(response.Payload), nil
 }
@@ -37,6 +38,7 @@ func GetPollPrivateDetailsSDK(s *SetupSDK, pollID string) (string, error) {
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
+    fmt.Println("Fabric transaction created")
 
     return string(response.Payload), nil
 }
@@ -55,6 +57,7 @@ func QueryAllPollsSDK(s *SetupSDK) (string, error) {
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
+    fmt.Println("Fabric transaction created")
 
     return string(response.Payload), nil
 }

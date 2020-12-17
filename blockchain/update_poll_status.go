@@ -31,6 +31,7 @@ func UpdatePollStatusSDK(s *SetupSDK, pollID, status string) (string, error) {
     if err != nil {
         return "", fmt.Errorf("failed to update: %v", err)
     }
+    fmt.Println("Fabric transaction created")
 
     // Wait for the result of the submission
     select {

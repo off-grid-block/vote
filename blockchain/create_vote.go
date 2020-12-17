@@ -51,6 +51,8 @@ func InitVoteSDK(s *SetupSDK, PollID string, VoterID string, VoterSex string, Vo
         return "", fmt.Errorf("failed to initiate: %v", err)
     }
 
+    fmt.Println("Fabric transaction created")
+
     // Wait for the result of the submission
     select {
     case ccEvent := <-notifier:
