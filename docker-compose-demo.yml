@@ -11,11 +11,11 @@ services:
       - net_deon
     volumes:
       - type: bind
-        source: ../off-grid-net/channel-artifacts
+        source: ../fabric-samples/first-network/channel-artifacts
         target: /config/channel-artifacts
         read_only: true
       - type: bind
-        source: ../off-grid-net/crypto-config
+        source: ../fabric-samples/first-network/crypto-config
         target: /config/crypto-config
         read_only: true
       - type: volume
@@ -36,11 +36,11 @@ services:
       - net_deon
     volumes:
       - type: bind
-        source: ../off-grid-net/channel-artifacts
+        source: ../fabric-samples/first-network/channel-artifacts
         target: /config/channel-artifacts
         read_only: true
       - type: bind
-        source: ../off-grid-net/crypto-config
+        source: ../fabric-samples/first-network/crypto-config
         target: /config/crypto-config
         read_only: true
       - type: bind

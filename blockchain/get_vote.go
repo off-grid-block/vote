@@ -25,7 +25,7 @@ func GetVoteSDK(s *SetupSDK, pollID, voterID string) (string, error) {
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
-    fmt.Println("Fabric transaction created")
+    fmt.Println("Fabric transaction created - get vote")
 
     return string(response.Payload), nil
 }
@@ -55,7 +55,7 @@ func GetVotePrivateDetailsSDK(s *SetupSDK, pollID, voterID string) (string, erro
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
-    fmt.Println("Fabric transaction created")
+    fmt.Println("Fabric transaction created - get vote private details")
 
     return string(response.Payload), nil
 }
@@ -83,7 +83,7 @@ func GetVotePrivateDetailsHashSDK(s *SetupSDK, pollID, voterID string) (string, 
     if err != nil {
         return "", fmt.Errorf("failed to query: %v", err)
     }
-    fmt.Println("Fabric transaction created")
+    fmt.Println("Fabric transaction created - get vote private details hash")
     
     return string(response.Payload), nil
 }

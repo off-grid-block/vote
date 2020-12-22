@@ -50,7 +50,7 @@ func InitPollSDK(s *SetupSDK, PollID, Title, PollHash string) (string, error) {
         return "", fmt.Errorf("failed to initiate: %v", err)
     }
 
-    fmt.Println("Fabric transaction created")
+    fmt.Println("Fabric transaction created - init poll")
 
     // Wait for the result of the submission
     select {
