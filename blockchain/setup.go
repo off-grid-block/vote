@@ -172,7 +172,27 @@ func (s *SetupSDK) ChainCodeInstallationInstantiation(ccID string) error {
 	    return errors.WithMessage(err, "failed to create collection config")
 	}
 
-	cfg := []*cb.CollectionConfig{collCfgPrivVote, collCfgPrivPoll}
+	// Create collection config for collectionPollPrivateDetails
+	var collCfgPollRequiredPeerCount, collCfgPollMaximumPeerCount int32
+	var collCfgPollBlockToLive uint64
+
+	collCfgPollName              := "collectionPoll"
+	collCfgPollBlockToLive       = 1000000
+	collCfgPollRequiredPeerCount = 0
+	collCfgPollMaximumPeerCount  = 3
+	collCfgPollPolicy            := "OR('Org1MSP.member', 'Org2MSP.member')"
+
+	collCfgPoll, err := newCollectionConfig(
+		collCfgPollName,
+		collCfgPollPolicy,
+		collCfgPollRequiredPeerCount,
+		collCfgPollMaximumPeerCount,
+		collCfgPollBlockToLive)
+	if err != nil {
+		return errors.WithMessage(err, "failed to create collection config")
+	}
+
+	cfg := []*cb.CollectionConfig{collCfgPrivVote, collCfgPrivPoll, collCfgPoll}
 
 	// instantiate chaincode with cc policy and collection configs
 	resp, err := s.Mgmt.InstantiateCC(

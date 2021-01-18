@@ -26,7 +26,7 @@ func (vc *VoteChaincode) updatePollStatus(stub shim.ChaincodeStubInterface, args
 
 	var p poll
 
-	existingPollAsBytes, err := stub.GetPrivateData("collectionPoll", pollID)
+	existingPollAsBytes, err := stub.GetState(pollID)
 	if err != nil {
 		return shim.Error("Failed to get associated poll: " + err.Error())
 	} else if existingPollAsBytes == nil {
@@ -44,7 +44,7 @@ func (vc *VoteChaincode) updatePollStatus(stub shim.ChaincodeStubInterface, args
 		return shim.Error(err.Error())
 	}
 
-	err = stub.PutPrivateData("collectionPoll", pollID, pollJSONasBytes)
+	err = stub.PutState(pollID, pollJSONasBytes)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
