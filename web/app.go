@@ -31,6 +31,7 @@ type initVoteRequestBodyAPI struct {
 type initPollRequestBodyAPI struct {
 	PollID 			string 		`json:"pollID"`
 	Title 			string 		`json:"title"`
+	CloseDate 		string 		`json:"closeDate"`
 	Content 		interface{} `json:"content"`
 }
 
@@ -50,6 +51,7 @@ type voteDetailsHttpResponse struct {
 type pollDetailsHttpResponse struct {
 	PollID 			string
 	Title 			string
+	CloseDate 		string
 	Status 			string
 	NumVotes 		int
 	Content 		interface{}
@@ -76,6 +78,7 @@ type pollResponseSDK struct {
 	ObjectType 		string
 	PollID 			string
 	Title 			string
+	CloseDate 		string
 	Status  		string
 	NumVotes 		int
 }

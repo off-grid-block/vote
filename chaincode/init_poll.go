@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"encoding/json"
+	//"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -20,6 +21,7 @@ func (vc *VoteChaincode) initPoll(stub shim.ChaincodeStubInterface, args []strin
 		PollID			string 	`json:"pollID"`
 		Salt 			string 	`json:"salt"`
 		PollHash 		string 	`json:"pollHash"`
+		CloseDate 		string	`json:"closeDate"`
 	}
 
 	fmt.Println("- start init vote")
@@ -79,8 +81,10 @@ func (vc *VoteChaincode) initPoll(stub shim.ChaincodeStubInterface, args []strin
 		ObjectType: "poll",
 		PollID: transInput.PollID,
 		Title: transInput.Title,
+		CloseDate: transInput.CloseDate,
 		Status: "ongoing",
 		NumVotes: 0,
+
 	}
 
 	pollJSONasBytes, err := json.Marshal(poll)

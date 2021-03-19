@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"bytes"
-		
+	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
 )
@@ -32,6 +31,7 @@ type poll struct {
 	PollID		string 	`json:"pollID"`
 	Title 		string 	`json:"title"`
 	Status		string 	`json:"status"`
+	CloseDate 	string	`json:"closeDate"`
 	NumVotes	int 	`json:"numVotes"`
 }
 
@@ -42,6 +42,11 @@ type pollPrivateDetails struct {
 	Salt 		string 	`json:"salt"`
 	PollHash 	string 	`json:"pollHash"`
 }
+
+
+const (
+	dateFormat = "2006-Jan-02"
+)
 
 
 type VoteChaincode struct {

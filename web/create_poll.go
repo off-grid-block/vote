@@ -1,9 +1,10 @@
 package web
 
 import (
-	"net/http"
 	"encoding/json"
 	"github.com/off-grid-block/vote/blockchain"
+	"net/http"
+	"time"
 )
 
 
@@ -28,8 +29,14 @@ func (app *Application) initPollHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	// Check if the time format is correct
+	_, err = time.Parse("2006-Jan-02", p.CloseDate)
+	if err != nil {
+		http.Error(w, "failed to deserialize close date: " + err.Error(), http.StatusInternalServerError)
+	}
+
 	// Call InitVoteSDK() to initialize a vote on the Fabric network
-	resp, err := blockchain.InitPollSDK(app.FabricSDK, p.PollID, p.Title, cid)
+	resp, err := blockchain.InitPollSDK(app.FabricSDK, p.PollID, p.Title, cid, p.CloseDate)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"encoding/json"
+	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -87,6 +88,17 @@ func (vc *VoteChaincode) initVote(stub shim.ChaincodeStubInterface, args []strin
 	err = json.Unmarshal(existingPollAsBytes, &p)
 	if err != nil {
 		return shim.Error(err.Error())
+	}
+
+	// deserialize close date string into Time object
+	closeDate, err := time.Parse(dateFormat, p.CloseDate)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	// check if the poll has already closed
+	if closeDate.Before(time.Now()) || p.Status == "closed" {
+		return shim.Error("Poll has already closed.")
 	}
 
 	// Increment num votes of poll
